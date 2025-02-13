@@ -31,24 +31,29 @@ public class NoticeController {
         return "redirect:/notice/list";
     }
 
-    //페이징 기능 추가된 공지사항 목록 조회
+    //페이징 기능+검색창이 추가된 공지사항 목록 조회
     @GetMapping("/list")
-    public String getNoticeList(@RequestParam(defaultValue = "1") int page,Model model){ // page 값은 URL에서 가져옴
-        int pageSize = 5; // 한페이지 당 갯수 설정
+    public String getNoticeList(@RequestParam(defaultValue = "1") int page,
+                                @RequestParam(defaultValue = "") String searchType,
+                                @RequestParam(defaultValue = "") String searchQuery,
+                                Model model) {
+        int pageSize = 5; // 한 페이지 당 갯수 설정
         int offset = (page - 1) * pageSize;
 
-        //페이징 적용된 데이터 가져옴 // notices는 컨트롤러 → 서비스로 전달(1-1)
-        List<NoticeDto> notices = noticeService.getNoticeList(page,pageSize);
-        //전체 페이지 개수 계산 해주는
+        // 검색된 공지사항 목록 가져오기
+        List<NoticeDto> notices = noticeService.searchNotices(searchType, searchQuery, pageSize, offset);
+        // 전체 페이지 개수 계산
         int totalPages = noticeService.getTotalPages(pageSize);
 
-
-        model.addAttribute("notices", notices); // notices는 컨트롤러 → html로 전달(1-2) 2개의 역할을 수행
+        model.addAttribute("notices", notices); // 공지사항 목록 전달
         model.addAttribute("currentPage", page); // 현재 페이지 번호 전달
         model.addAttribute("totalPages", totalPages); // 총 페이지 수 전달
+        model.addAttribute("searchType", searchType); // 검색 기준 전달
+        model.addAttribute("searchQuery", searchQuery); // 검색어 전달
 
         return "notice/notice-list";
     }
+
     @GetMapping("/detail/{id}")
     public String getNoticeDetail(@PathVariable("id") int noticeId, Model model) {
         NoticeDto notice = noticeService.getNoticeById(noticeId);
@@ -65,17 +70,6 @@ public class NoticeController {
         return "notice/notice-update";
     }
 
-//
-//    @PostMapping("/update")
-//    public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingResult result) {
-//        System.out.println("수정할 공지사항 ID: " + noticeDto.getNoticeId()); // 디버깅 코드
-//
-//        if (result.hasErrors()) {
-//            return "notice/notice-update"; // 오류 발생 시 다시 수정 페이지로 이동
-//        }
-//        noticeService.updateNotice(noticeDto);
-//        return "redirect:/notice/list"; // 정상 처리 후 목록으로 이동
-//    }
 @PostMapping("/update")
 public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingResult result) {
     System.out.println("수정할 공지사항 ID: " + noticeDto.getNoticeId());
@@ -97,12 +91,11 @@ public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingRe
 }
 
 
-
-
     @PostMapping("/delete/{id}")
     public String deleteNotice(@PathVariable("id") int noticeId) {
         noticeService.deleteNotice(noticeId);
         return "redirect:/notice/list"; // 삭제 후 목록으로 이동
     }
+
 }
 

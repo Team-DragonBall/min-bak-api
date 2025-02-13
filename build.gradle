@@ -35,6 +35,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok' //롬복
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' //기본
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher' //기본
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc' // MyBatis는 DB와의 연결을 위해 DataSource를 필요
 }
 
 tasks.named('test') {

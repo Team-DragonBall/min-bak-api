@@ -36,4 +36,27 @@
     <delete id="deleteNotice" parameterType="int">
         DELETE FROM notice WHERE notice_id = #{noticeId}
     </delete>
+
+    <!-- 제목, 내용, 작성자 검색 -->
+    <select id="searchNotices" resultType="com.minbak.web.notice.NoticeDto">
+        SELECT notice_id, user_id, title, content, created_at
+        FROM notice
+        <where>
+            <if test="searchType != null">
+                <choose>
+                    <when test="searchType == 'title'">
+                        AND title LIKE CONCAT('%', #{searchQuery}, '%')
+                    </when>
+                    <when test="searchType == 'content'">
+                        AND content LIKE CONCAT('%', #{searchQuery}, '%')
+                    </when>
+                    <when test="searchType == 'author'">
+                        AND user_id LIKE CONCAT('%', #{searchQuery}, '%')
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
 </mapper>
