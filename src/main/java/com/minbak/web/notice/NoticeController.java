@@ -70,25 +70,25 @@ public class NoticeController {
         return "notice/notice-update";
     }
 
-@PostMapping("/update")
-public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingResult result) {
-    System.out.println("수정할 공지사항 ID: " + noticeDto.getNoticeId());
+    @PostMapping("/update")
+    public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingResult result) {
+        System.out.println("수정할 공지사항 ID: " + noticeDto.getNoticeId());
 
-    if (result.hasErrors()) {
-        System.out.println("유효성 검사 실패: " + result.getAllErrors()); // 전체 오류 메시지 출력
+        if (result.hasErrors()) {
+            System.out.println("유효성 검사 실패: " + result.getAllErrors()); // 전체 오류 메시지 출력
 
-        // 개별 필드별 오류 출력
-        result.getFieldErrors().forEach(error -> {
-            System.out.println("오류 필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
-        });
+            // 개별 필드별 오류 출력
+            result.getFieldErrors().forEach(error -> {
+                System.out.println("오류 필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
+            });
 
-        return "notice/notice-update"; // 유효성 검사 실패 시 다시 update 페이지로 이동
+            return "notice/notice-update"; // 유효성 검사 실패 시 다시 update 페이지로 이동
+        }
+
+        noticeService.updateNotice(noticeDto);
+        System.out.println("수정 완료 후 목록으로 이동");
+        return "redirect:/notice/list";
     }
-
-    noticeService.updateNotice(noticeDto);
-    System.out.println("수정 완료 후 목록으로 이동");
-    return "redirect:/notice/list";
-}
 
 
     @PostMapping("/delete/{id}")
