@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.notice.NoticeMapper">
+
+    <insert id="insertNotice" parameterType="com.minbak.web.notice.NoticeDto" useGeneratedKeys="true" keyProperty="noticeId">
+        INSERT INTO notice (user_id, title, content, created_at)
+        VALUES (#{userId}, #{title}, #{content}, NOW())
+    </insert>
+
+
+    <!-- 공지사항 목록 조회 -->
+    <select id="getNoticeList" resultType="com.minbak.web.notice.NoticeDto">
+        SELECT notice_id, user_id, title, created_at
+        FROM notice
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <!-- 공지사항 총 개수 조회 -->
+    <select id="getNoticeCount" resultType="int">
+        SELECT COUNT(*) FROM notice
+    </select>
+    <!-- 공지사항 상세 조회 -->
+    <select id="getNoticeById" parameterType="int" resultType="com.minbak.web.notice.NoticeDto">
+        SELECT * FROM notice WHERE notice_id = #{noticeId}
+    </select>
+
+
+    <update id="updateNotice" parameterType="com.minbak.web.notice.NoticeDto">
+        UPDATE notice
+        SET title = #{title}, content = #{content}
+        WHERE notice_id = #{noticeId}
+    </update>
+
+    <delete id="deleteNotice" parameterType="int">
+        DELETE FROM notice WHERE notice_id = #{noticeId}
+    </delete>
+
+    <!-- 제목, 내용, 작성자 검색 -->
+    <select id="searchNotices" resultType="com.minbak.web.notice.NoticeDto">
+        SELECT notice_id, user_id, title, content, created_at
+        FROM notice
+        <where>
+            <if test="searchType != null">
+                <choose>
+                    <when test="searchType == 'title'">
+                        AND title LIKE CONCAT('%', #{searchQuery}, '%')
+                    </when>
+                    <when test="searchType == 'content'">
+                        AND content LIKE CONCAT('%', #{searchQuery}, '%')
+                    </when>
+                    <when test="searchType == 'author'">
+                        AND user_id LIKE CONCAT('%', #{searchQuery}, '%')
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+</mapper>
