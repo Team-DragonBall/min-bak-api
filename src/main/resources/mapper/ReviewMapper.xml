@@ -5,6 +5,10 @@
 <mapper namespace="com.minbak.web.review.ReviewMapper">
 
 
+    <select id="createReview">
+        INSERT INTO review (user_id, book_id, content, score)
+        VALUES (#{userId}, #{bookId}, #{content}, #{score});
+    </select>
     <!-- 리뷰 목록 조회 -->
     <select id="findAllReview" resultType="com.minbak.web.review.ReviewDto">
         SELECT * FROM review

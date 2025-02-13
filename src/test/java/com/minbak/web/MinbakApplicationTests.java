@@ -5,6 +5,9 @@ import com.minbak.web.board.comments.BoardCommentDto;
 import com.minbak.web.board.comments.BoardCommentsMapper;
 import com.minbak.web.board.posts.BoardPostDto;
 import com.minbak.web.board.posts.BoardPostsMapper;
+import com.minbak.web.review.ReviewDto;
+import com.minbak.web.review.ReviewMapper;
+import com.minbak.web.review.ReviewService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +23,9 @@ class MinbakApplicationTests {
 	BoardCommentsMapper boardCommentsMapper;
 
 	@Autowired
+	ReviewMapper reviewMapper;
+
+	@Autowired
 	BoardPostsMapper boardPostsMapper;
 
 	@Autowired
@@ -28,24 +34,6 @@ class MinbakApplicationTests {
 	@Test
 	void inputBoardData(){
 
-		//카테고리 추가
-//		for(int i = 1; i <= 10;i++){
-//			String CategoryName = i+"번 카테고리";
-//			boardCategoriesMapper.createCategory(CategoryName);
-//		}
-
-		//게시글 추가
-//		for(int i = 1; i <= 10;i++){
-//			BoardPostDto boardPostDto = new BoardPostDto();
-//			boardPostDto.setTitle(i+"번 게시글");
-//			boardPostDto.setAuthor("류용환");
-//			boardPostDto.setContent("안녕하세요," + i +"번 게시글 내용입니다.");
-//			boardPostDto.setCategoryId(i);
-//			boardPostDto.setSubject("잡담");
-//			boardPostsMapper.createPost(boardPostDto);
-//		}
-
-		//댓글 추가
 		for(int i = 2; i <= 10;i++){
 			BoardCommentDto boardCommentDto = new BoardCommentDto();
 			boardCommentDto.setPostId(i);
@@ -54,5 +42,18 @@ class MinbakApplicationTests {
 			boardCommentsMapper.createComment(boardCommentDto);
 		}
 
+	}
+
+	@Test
+	void inputReview(){
+		for (int i = 1;i <10;i++){
+			ReviewDto reviewDto = new ReviewDto();
+			reviewDto.setContent(i+"숙소가 깨끗해요.");
+			reviewDto.setUserId(i);
+			reviewDto.setBookId((i%3)+1);
+			reviewDto.setScore(4);
+
+			reviewMapper.createReview(reviewDto);
+		}
 	}
 }
