@@ -29,6 +29,7 @@ class MinbakApplicationTests {
 				usersService.createUser(userDto);
 			}
 		}
+
 	}
 
 	@Test
