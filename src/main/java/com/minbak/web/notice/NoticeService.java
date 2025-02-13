@@ -16,6 +16,8 @@ public class NoticeService {
         noticeDto.setCreatedAt(LocalDateTime.now()); // 현재 시간 설정
         noticeMapper.insertNotice(noticeDto);
     }
+
+    // 페이지네이션 구현, 전체 목록 보기
     public List<NoticeDto> getNoticeList(int page, int limit) {
         int offset = (page - 1) * limit; // offset 계산
         return noticeMapper.getNoticeList(limit, offset);
@@ -26,16 +28,15 @@ public class NoticeService {
         return (int) Math.ceil((double) totalNotices / limit);
     }
 
-
-
+    //상세 보기
     public NoticeDto getNoticeById(int noticeId) {
         return noticeMapper.getNoticeById(noticeId);
     }
-
+    //수정
     public void updateNotice(NoticeDto noticeDto) {
         noticeMapper.updateNotice(noticeDto);
     }
-
+    //삭제
     public void deleteNotice(int noticeId) {
         noticeMapper.deleteNotice(noticeId);
     }

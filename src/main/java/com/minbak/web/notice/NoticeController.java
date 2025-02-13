@@ -25,24 +25,25 @@ public class NoticeController {
     @PostMapping("/notice-create")
     public String createNotice(@Valid NoticeDto noticeDto, BindingResult result) {
         if (result.hasErrors()) {
-            return "notice/notice-create";
+            return "notice/notice-create";// 오류 발생 시 다시 작성 페이지로 이동
         }
         noticeService.createNotice(noticeDto);
         return "redirect:/notice/list";
     }
-//페이징 기능 추가된 공지사항 목록 조회
+
+    //페이징 기능 추가된 공지사항 목록 조회
     @GetMapping("/list")
     public String getNoticeList(@RequestParam(defaultValue = "1") int page,Model model){ // page 값은 URL에서 가져옴
         int pageSize = 5; // 한페이지 당 갯수 설정
         int offset = (page - 1) * pageSize;
 
-        //페이징 적용된 데이터 가져옴? // notices는 컨트롤러 → 서비스로 전달(1-1)
+        //페이징 적용된 데이터 가져옴 // notices는 컨트롤러 → 서비스로 전달(1-1)
         List<NoticeDto> notices = noticeService.getNoticeList(page,pageSize);
         //전체 페이지 개수 계산 해주는
         int totalPages = noticeService.getTotalPages(pageSize);
 
 
-        model.addAttribute("notices", notices); // notices는 컨트롤러 → html로 전달(1-2) 하기도 함
+        model.addAttribute("notices", notices); // notices는 컨트롤러 → html로 전달(1-2) 2개의 역할을 수행
         model.addAttribute("currentPage", page); // 현재 페이지 번호 전달
         model.addAttribute("totalPages", totalPages); // 총 페이지 수 전달
 
@@ -59,15 +60,44 @@ public class NoticeController {
     @GetMapping("/update/{noticeId}")
     public String showUpdateForm(@PathVariable Integer noticeId, Model model) {
         NoticeDto noticeDto = noticeService.getNoticeById(noticeId);
+        System.out.println("불러온 공지사항: " + noticeDto); // 디버깅 코드. Dto를 잘 불러오는지 확인용.
         model.addAttribute("noticeDto", noticeDto);
-        return "notice/notice-update"; // 파일 경로 확인
+        return "notice/notice-update";
     }
 
-    @PostMapping("/update")
-    public String updateNotice(@ModelAttribute NoticeDto noticeDto) {
-        noticeService.updateNotice(noticeDto);
-        return "redirect:/notice/list"; // 수정 후 공지사항 목록 페이지로 이동    }
+//
+//    @PostMapping("/update")
+//    public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingResult result) {
+//        System.out.println("수정할 공지사항 ID: " + noticeDto.getNoticeId()); // 디버깅 코드
+//
+//        if (result.hasErrors()) {
+//            return "notice/notice-update"; // 오류 발생 시 다시 수정 페이지로 이동
+//        }
+//        noticeService.updateNotice(noticeDto);
+//        return "redirect:/notice/list"; // 정상 처리 후 목록으로 이동
+//    }
+@PostMapping("/update")
+public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingResult result) {
+    System.out.println("수정할 공지사항 ID: " + noticeDto.getNoticeId());
+
+    if (result.hasErrors()) {
+        System.out.println("유효성 검사 실패: " + result.getAllErrors()); // 전체 오류 메시지 출력
+
+        // 개별 필드별 오류 출력
+        result.getFieldErrors().forEach(error -> {
+            System.out.println("오류 필드: " + error.getField() + " / 메시지: " + error.getDefaultMessage());
+        });
+
+        return "notice/notice-update"; // 유효성 검사 실패 시 다시 update 페이지로 이동
     }
+
+    noticeService.updateNotice(noticeDto);
+    System.out.println("수정 완료 후 목록으로 이동");
+    return "redirect:/notice/list";
+}
+
+
+
 
     @PostMapping("/delete/{id}")
     public String deleteNotice(@PathVariable("id") int noticeId) {
