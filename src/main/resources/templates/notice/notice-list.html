@@ -52,10 +52,10 @@
 <main>
   <div class="top-bar">
     <h2>공지사항 목록</h2>
-    <a href="/notice/notice-create" class="create-btn">글쓰기</a>
+    <a th:href="@{/admin/notice/notice-create}" class="create-btn">글쓰기</a>
 
     <!-- 검색 폼 -->
-    <form th:action="@{/notice/list}" method="get">
+    <form th:action="@{/admin/notice/list}" method="get">
       <label for="searchType">검색 기준:</label>
       <select name="searchType" id="searchType">
         <option value="title" th:selected="${searchType == 'title'}">제목</option>
@@ -83,7 +83,7 @@
     <tr th:each="notice, stat : ${notices}">
       <td th:text="${stat.count}"></td>
       <td>
-        <a th:href="@{/notice/detail/{id}(id=${notice.noticeId})}" th:text="${notice.title}"></a>
+        <a th:href="@{/admin/notice/detail/{id}(id=${notice.noticeId})}" th:text="${notice.title}"></a>
       </td>
       <td th:text="${notice.userId}"></td>
       <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
@@ -94,17 +94,18 @@
   <!-- 페이징 UI -->
   <div class="pagination">
     <!-- 이전 페이지 -->
-    <a th:if="${currentPage > 1}" th:href="@{/notice/list(page=${currentPage - 1})}">이전</a>
+    <a th:if="${currentPage > 1}" th:href="@{/admin/notice/list(page=${currentPage - 1})}">이전</a>
 
     <!-- 페이지 번호 -->
     <a th:each="page : ${#numbers.sequence(1, totalPages)}"
-       th:href="@{/notice/list(page=${page})}"
+       th:href="@{/admin/notice/list(page=${page})}"
        th:text="${page}"
        th:classappend="${page == currentPage} ? 'active' : ''">
     </a>
 
+
     <!-- 다음 페이지 -->
-    <a th:if="${currentPage < totalPages}" th:href="@{/notice/list(page=${currentPage + 1})}">다음</a>
+    <a th:if="${currentPage < totalPages}" th:href="@{/admin/notice/list(page=${currentPage + 1})}">다음</a>
   </div>
 
 </main>

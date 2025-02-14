@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/notice")
+@RequestMapping("/admin/notice")
 public class NoticeController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class NoticeController {
             return "notice/notice-create";// 오류 발생 시 다시 작성 페이지로 이동
         }
         noticeService.createNotice(noticeDto);
-        return "redirect:/notice/list";
+        return "redirect:/admin/notice/list";
     }
 
     //페이징 기능+검색창이 추가된 공지사항 목록 조회
@@ -87,14 +87,14 @@ public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingRe
 
     noticeService.updateNotice(noticeDto);
     System.out.println("수정 완료 후 목록으로 이동");
-    return "redirect:/notice/list";
+    return "redirect:/admin/notice/list";
 }
 
 
     @PostMapping("/delete/{id}")
     public String deleteNotice(@PathVariable("id") int noticeId) {
         noticeService.deleteNotice(noticeId);
-        return "redirect:/notice/list"; // 삭제 후 목록으로 이동
+        return "redirect:/admin/notice/list"; // 삭제 후 목록으로 이동
     }
 
 }

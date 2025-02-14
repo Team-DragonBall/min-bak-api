@@ -11,7 +11,7 @@
     </style>
 </head>
 <body>
-<form th:object="${noticeDto}" action="/notice/update" method="post">
+<form th:object="${noticeDto}" th:action="@{/admin/notice/update}" method="post">
     <input type="hidden" th:field="*{noticeId}" /> <!-- userId 값이 hidden input으로 전달. null이 되는 문제를 해결.-->
     <input type="hidden" th:field="*{userId}" /> <!-- userId 추가 -->
 
