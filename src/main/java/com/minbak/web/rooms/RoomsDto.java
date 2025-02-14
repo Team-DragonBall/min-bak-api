@@ -20,6 +20,12 @@ public class RoomsDto {
     private String userEmail;
 
 
+    @Override
+    public String toString() {
+        return "RoomsDto{" +
+                "user_email='" + userEmail + '\'' +
+                '}';
+    }
 
 
 //    usersDto 받아올 예정
