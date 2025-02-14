@@ -148,4 +148,9 @@ public class UsersController {
         return "/users/edit";
     }
 
+    @GetMapping("/url")
+    public String urls(){
+        return "url";
+    }
+
 }
