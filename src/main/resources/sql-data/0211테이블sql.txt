@@ -1,4 +1,3 @@
-
 create database minbak_db;
 
 use minbak_db;
@@ -20,7 +19,7 @@ CREATE TABLE roles (
     role VARCHAR(50) UNIQUE NOT NULL
 );
 
-CREATE TABLE user_roles (
+CREATE TABLE users_roles (
     user_id INT NOT NULL,
     role_id INT NOT NULL,
     PRIMARY KEY (user_id, role_id),
@@ -42,6 +41,9 @@ ALTER TABLE rooms
 ADD COLUMN user_id INT NOT NULL COMMENT '사용자 ID',
 ADD CONSTRAINT fk_rooms_user
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE;
+
+ALTER TABLE rooms ADD latitude DECIMAL(10, 6);
+ALTER TABLE rooms ADD longitude DECIMAL(10, 6);
 
 -- 3. 예약 테이블
 CREATE TABLE books (
@@ -75,6 +77,9 @@ CREATE TABLE board_categories (
     id INT AUTO_INCREMENT PRIMARY KEY,  -- 고유 ID, 자동 증가
     name VARCHAR(255) NOT NULL      -- 카테고리 이름 (필수)
 );
+
+ALTER TABLE board_categories
+ADD COLUMN `order` INT DEFAULT 0;
 
 -- 6. 게시판 게시글 테이블
 CREATE TABLE board_posts (
@@ -148,4 +153,18 @@ CREATE TABLE rooms_categories (
     PRIMARY KEY (room_id, category_id),
     FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,   -- 숙박 시설 ID 참조
     FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE -- 카테고리 ID 참조
+);
+
+CREATE TABLE payments (
+    payment_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '결제 고유 ID',
+    user_id INT NOT NULL COMMENT '결제한 회원 ID',
+    book_id INT NOT NULL COMMENT '예약 ID',
+    amount DECIMAL(10,2) NOT NULL COMMENT '결제 금액',
+    status ENUM('pending', 'completed', 'failed', 'refunded') NOT NULL DEFAULT 'pending' COMMENT '결제 상태',
+    method ENUM('credit_card', 'paypal', 'bank_transfer') NOT NULL COMMENT '결제 수단',
+    transaction_id VARCHAR(255) UNIQUE COMMENT '외부 결제 시스템 트랜잭션 ID',
+    paid_at DATETIME DEFAULT NULL COMMENT '결제 완료 시간',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '결제 요청 시간',
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE CASCADE
 );
