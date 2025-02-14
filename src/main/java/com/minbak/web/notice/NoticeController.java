@@ -16,13 +16,13 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
 
-    @GetMapping("/notice-create")
+    @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("noticeDto", new NoticeDto());
         return "notice/notice-create";
     }
 
-    @PostMapping("/notice-create")
+    @PostMapping("/create")
     public String createNotice(@Valid NoticeDto noticeDto, BindingResult result) {
         if (result.hasErrors()) {
             return "notice/notice-create";// 오류 발생 시 다시 작성 페이지로 이동
