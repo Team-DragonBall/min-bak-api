@@ -21,12 +21,4 @@ public interface NoticeMapper {
     void updateNotice(NoticeDto noticeDto);
     void deleteNotice(@Param("noticeId") int noticeId);
 
-
-    // 공지사항 검색
-    List<NoticeDto> searchNotices(
-            @Param("searchType") String searchType,
-            @Param("searchQuery") String searchQuery,
-            @Param("limit") int limit,
-            @Param("offset") int offset
-    );
 }

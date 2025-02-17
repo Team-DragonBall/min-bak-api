@@ -45,8 +45,4 @@ public class NoticeService {
     }
 
 
-    // 공지사항 검색
-    public List<NoticeDto> searchNotices(String searchType, String searchQuery, int limit, int offset) {
-        return noticeMapper.searchNotices(searchType, searchQuery, limit, offset);
-    }
 }
