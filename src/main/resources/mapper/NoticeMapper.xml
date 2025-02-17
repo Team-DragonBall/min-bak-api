@@ -12,9 +12,9 @@
 
     <!-- 공지사항 목록 조회 -->
     <select id="getNoticeList" resultType="com.minbak.web.notice.NoticeDto">
-        SELECT notice_id, user_id, title, created_at
-        FROM notice
-        ORDER BY created_at DESC
+        SELECT n.notice_id, n.user_id, n.title, n.created_at
+        FROM notice n
+        ORDER BY n.created_at DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
     <!-- 공지사항 총 개수 조회 -->

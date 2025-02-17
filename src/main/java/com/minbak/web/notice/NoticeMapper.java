@@ -12,14 +12,15 @@ public interface NoticeMapper {
 
     // 공지사항 목록 조회 (페이징 적용)
     List<NoticeDto> getNoticeList(@Param("limit") int limit, @Param("offset") int offset);
-    // 전체 공지사항 개수 조회 (총 페이지 계산용)
+    // 공지사항 총 개수 조회
     int getNoticeCount();
-    // 공지사항 목록 상세 조회
+    // 공지사항 상세 조회
     NoticeDto getNoticeById(int noticeId);
 
 
     void updateNotice(NoticeDto noticeDto);
     void deleteNotice(@Param("noticeId") int noticeId);
+
 
     // 공지사항 검색
     List<NoticeDto> searchNotices(

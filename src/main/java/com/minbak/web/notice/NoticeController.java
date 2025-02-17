@@ -31,25 +31,28 @@ public class NoticeController {
         return "redirect:/admin/notice/list";
     }
 
-    //페이징 기능+검색창이 추가된 공지사항 목록 조회
+
+    // 페이징 기능 + 검색 기능이 추가된 공지사항 목록 조회
     @GetMapping("/list")
     public String getNoticeList(@RequestParam(defaultValue = "1") int page,
+                                @RequestParam(defaultValue = "5") int pageSize,
                                 @RequestParam(defaultValue = "") String searchType,
                                 @RequestParam(defaultValue = "") String searchQuery,
                                 Model model) {
-        int pageSize = 5; // 한 페이지 당 갯수 설정
-        int offset = (page - 1) * pageSize;
+        // 페이지네이션 처리
+        NoticePageDto<NoticeDto> noticePageDto = noticeService.getNoticeList(page, pageSize);
 
-        // 검색된 공지사항 목록 가져오기
-        List<NoticeDto> notices = noticeService.searchNotices(searchType, searchQuery, pageSize, offset);
-        // 전체 페이지 개수 계산
-        int totalPages = noticeService.getTotalPages(pageSize);
+        model.addAttribute("notices", noticePageDto.getObjects());  // 공지사항 목록
+        model.addAttribute("currentPage", noticePageDto.getCurrentPage());  // 현재 페이지
+        model.addAttribute("totalPages", noticePageDto.getTotalPages());  // 총 페이지 수
+        model.addAttribute("startPage", noticePageDto.getStartPage());  // 네비게이션 시작 페이지
+        model.addAttribute("endPage", noticePageDto.getEndPage());  // 네비게이션 끝 페이지
+        model.addAttribute("hasPrev", noticePageDto.isHasPrev());  // 이전 페이지 여부
+        model.addAttribute("hasNext", noticePageDto.isHasNext());  // 다음 페이지 여부
 
-        model.addAttribute("notices", notices); // 공지사항 목록 전달
-        model.addAttribute("currentPage", page); // 현재 페이지 번호 전달
-        model.addAttribute("totalPages", totalPages); // 총 페이지 수 전달
-        model.addAttribute("searchType", searchType); // 검색 기준 전달
-        model.addAttribute("searchQuery", searchQuery); // 검색어 전달
+        // 검색 기준과 검색어도 모델에 추가
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchQuery", searchQuery);
 
         return "notice/notice-list";
     }

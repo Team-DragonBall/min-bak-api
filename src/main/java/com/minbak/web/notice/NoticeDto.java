@@ -21,4 +21,7 @@ public class NoticeDto {
     private String content; // 공지사항 내용
 
     private LocalDateTime createdAt; // 생성 시간
+
+    private String username; // 나중을 대비해서 미리 만들어 둠
+
 }

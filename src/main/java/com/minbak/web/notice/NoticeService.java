@@ -17,16 +17,19 @@ public class NoticeService {
         noticeMapper.insertNotice(noticeDto);
     }
 
-    // 페이지네이션 구현, 전체 목록 보기
-    public List<NoticeDto> getNoticeList(int page, int limit) {
-        int offset = (page - 1) * limit; // offset 계산
-        return noticeMapper.getNoticeList(limit, offset);
-    }
-    // 총 페이지 수 계산
-    public int getTotalPages(int limit) {
+    //페이지네이션 구현, 전체 목록보기
+    public NoticePageDto<NoticeDto> getNoticeList(int currentPage, int pageSize){
+        //천체 공지사항 개수 조회
         int totalNotices = noticeMapper.getNoticeCount();
-        return (int) Math.ceil((double) totalNotices / limit);
+
+        //현재 페이지에 해당하는 공지사항 목록 가져오기
+        int offset = (currentPage - 1 ) * pageSize; // offset 계산하는 것 = offset은 DB에서 데이터를 가져올 때, 몇 번째 항목부터 가져올지 결정하는 값.
+        List<NoticeDto> notices = noticeMapper.getNoticeList(pageSize, offset);
+        // NoticePageDto 생성
+        return new NoticePageDto<>(currentPage, pageSize, totalNotices, notices);
     }
+
+
 
     //상세 보기
     public NoticeDto getNoticeById(int noticeId) {
