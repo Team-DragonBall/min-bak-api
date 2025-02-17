@@ -1,5 +1,6 @@
 package com.minbak.web.rooms;
 
+import com.minbak.web.dto.RoomsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

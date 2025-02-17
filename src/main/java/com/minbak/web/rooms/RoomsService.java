@@ -1,5 +1,6 @@
 package com.minbak.web.rooms;
 
+import com.minbak.web.dto.RoomsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,9 @@ public class RoomsService {
     }
     // 상세 보기
     public RoomsDto selectRoomById(int roomId){
-        return roomsMapper.selectRoomById(roomId);
+        return roomsMapper.selectRoomById(roomId).orElseThrow(
+                () -> new IllegalStateException("데이터를 찾을 수 없습니다.")
+        );
     }
     // 수정 기능
     public int updateRoom(RoomsDto roomsDto){

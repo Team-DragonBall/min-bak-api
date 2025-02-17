@@ -1,6 +1,8 @@
-package com.minbak.web.rooms;
+package com.minbak.web.dto;
 
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,32 +18,10 @@ public class RoomsDto {
     private String useGuide;    // 숙소 이용 안내
     private double latitude;          // 숙소 위도 y
     private double longitude;         // 숙소 경도 x
+    //
     private Integer user_id;
     private String userEmail;
-
-
-
-
 //    usersDto 받아올 예정
-
-
-
-
-
-
-
-
-
 //    reviewDto 받아올 예정
-
-
-
-
-
-
-
-
-
-
-
+    private List<ReviewDto> reviews;
 }

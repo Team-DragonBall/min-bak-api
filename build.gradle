@@ -27,7 +27,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation' //유효성검사 의존성
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4' //mybatis
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4' //mybatis
-	runtimeOnly 'com.mysql:mysql-connector-j' //mysql
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf' //타임리프
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' //타임리프 레이아웃
 	implementation 'org.springframework.boot:spring-boot-starter-web' //spring-web
@@ -35,6 +34,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok' //롬복
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' //기본
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher' //기본
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 }
 
 tasks.named('test') {

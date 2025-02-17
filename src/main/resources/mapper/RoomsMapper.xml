@@ -4,13 +4,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.rooms.RoomsMapper">
     <!-- INSERT -->
-    <insert id="insertRoom" parameterType="com.minbak.web.rooms.RoomsDto">
+    <insert id="insertRoom" parameterType="com.minbak.web.dto.RoomsDto">
         INSERT INTO `rooms` (`name`, `content`, `address`, `price`, `use_guide`)
         VALUES (#{name}, #{content}, #{address}, #{price}, #{useGuide});
     </insert>
 
     <!-- UPDATE -->
-    <update id="updateRoom" parameterType="com.minbak.web.rooms.RoomsDto">
+    <update id="updateRoom" parameterType="com.minbak.web.dto.RoomsDto">
         UPDATE `rooms` r
         LEFT JOIN `users` u ON r.user_id = u.user_id
         SET
@@ -24,7 +24,7 @@
     </update>
 
     <!-- SELECT: 모든 숙박 시설 조회 -->
-    <select id="selectAllRooms" resultType="com.minbak.web.rooms.RoomsDto">
+    <select id="selectAllRooms" resultType="com.minbak.web.dto.RoomsDto">
         SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
         FROM `rooms`;
     </select>
@@ -33,7 +33,7 @@
         SELECT COUNT(*) FROM `rooms`;
     </select>
 
-    <select id="selectRoomsByPage" resultType="com.minbak.web.rooms.RoomsDto">
+    <select id="selectRoomsByPage" resultType="com.minbak.web.dto.RoomsDto">
         SELECT
         `room_id`,
         `name`,
@@ -49,7 +49,7 @@
     </select>
 
     <!-- SELECT: 특정 숙박 시설 조회 -->
-    <select id="selectRoomById" parameterType="int" resultType="com.minbak.web.rooms.RoomsDto">
+    <select id="selectRoomById" parameterType="int" resultType="com.minbak.web.dto.RoomsDto">
         SELECT
         r.room_id, r.name, r.content, r.address, r.price, r.use_guide,
         r.latitude, r.longitude, u.email AS userEmail
@@ -59,13 +59,13 @@
     </select>
 
     <!-- SELECT: 가격을 기준으로 정렬하여 숙박 시설 조회 -->
-    <select id="selectRoomsByPrice" resultType="com.minbak.web.rooms.RoomsDto">
+    <select id="selectRoomsByPrice" resultType="com.minbak.web.dto.RoomsDto">
         SELECT `room_id`, `name`, `content`, `address`, `price`, `use_guide`
         FROM `rooms`
         ORDER BY `price` ASC;
     </select>
 
-    <resultMap id="roomsWithUserResultMap" type="com.minbak.web.rooms.RoomsDto">
+    <resultMap id="roomsWithUserResultMap" type="com.minbak.web.dto.RoomsDto">
         <!-- rooms 테이블의 컬럼들 매핑 -->
         <id property="roomId" column="room_id"/>
         <result property="name" column="name"/>
@@ -77,19 +77,25 @@
         <result property="longitude" column="longitude"/>
 
         <!-- users 테이블의 컬럼들 매핑 -->
-        <result property="user_id" column="user_id"/>
+        <result property="userId" column="user_id"/>
         <result property="userEmail" column="email"/>
+
+        <collection property="reviews" ofType="com.minbak.web.dto.ReviewDto">
+            <id property="reviewId" column="review_id"/>
+        </collection>
     </resultMap>
 
     <!--users id 연결-->
     <select id="selectRoomsWithUser" resultMap="roomsWithUserResultMap">
         SELECT
-        r.room_id, r.name, r.content, r.address, r.price, r.use_guide,
-        r.latitude, r.longitude,
-        u.email AS email
-        FROM rooms r
-        LEFT JOIN users u ON r.user_id = u.user_id
-        ORDER BY r.room_id DESC
+            rm.room_id, rm.name, rm.content, rm.address, rm.price, rm.use_guide,
+            rm.latitude, rm.longitude,
+            ur.email
+            rv_bk.review_id
+        FROM rooms rm
+            INNER JOIN users ur on rm.user_id = ur.user_id
+            INNER JOIN (SELECT rv.review_id, bk.room_id FROM review rv INNER JOIN books bk ON rv.book_id = bk.book_id) rv_bk ON rv_bk.room_id = rm.room_id
+        ORDER BY rm.room_id DESC
         LIMIT #{size} OFFSET #{offset};
     </select>
 
