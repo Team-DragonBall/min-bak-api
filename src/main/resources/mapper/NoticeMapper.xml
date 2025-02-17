@@ -37,4 +37,48 @@
         DELETE FROM notice WHERE notice_id = #{noticeId}
     </delete>
 
+
+
+
+    <!-- 검색된 공지사항 개수 조회 -->
+    <select id="getSearchNoticeCount" resultType="int">
+        SELECT COUNT(*)
+        FROM notice
+        <where>
+            <choose>
+                <when test="searchType == 'title'">
+                    AND title LIKE CONCAT('%', #{searchQuery}, '%')
+                </when>
+                <when test="searchType == 'content'">
+                    AND content LIKE CONCAT('%', #{searchQuery}, '%')
+                </when>
+                <otherwise>
+                    1 = 1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!-- 검색된 공지사항 목록 조회 -->
+    <select id="searchNotices" resultType="com.minbak.web.notice.NoticeDto">
+        SELECT *
+        FROM notice
+        <where>
+            <choose>
+                <when test="searchType == 'title'">
+                    AND title LIKE CONCAT('%', #{searchQuery}, '%')
+                </when>
+                <when test="searchType == 'content'">
+                    AND content LIKE CONCAT('%', #{searchQuery}, '%')
+                </when>
+                <otherwise>
+                    1 = 1
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{pageSize} OFFSET #{offset}
+    </select>
+
+
 </mapper>

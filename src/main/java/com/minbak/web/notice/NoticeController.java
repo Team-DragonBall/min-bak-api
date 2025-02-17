@@ -32,7 +32,6 @@ public class NoticeController {
     }
 
 
-    // 페이징 기능 + 검색 기능이 추가된 공지사항 목록 조회
     @GetMapping("/list")
     public String getNoticeList(@RequestParam(defaultValue = "1") int page,
                                 @RequestParam(defaultValue = "5") int pageSize,
@@ -40,11 +39,11 @@ public class NoticeController {
                                 @RequestParam(defaultValue = "") String searchQuery,
                                 Model model) {
         // 페이지네이션 처리
-        NoticePageDto<NoticeDto> noticePageDto = noticeService.getNoticeList(page, pageSize);
+        NoticePageDto<NoticeDto> noticePageDto = noticeService.getNoticeList(page, pageSize, searchType, searchQuery);
 
         model.addAttribute("notices", noticePageDto.getObjects());  // 공지사항 목록
         model.addAttribute("currentPage", noticePageDto.getCurrentPage());  // 현재 페이지
-        model.addAttribute("totalPages", noticePageDto.getTotalPages());  // 총 페이지 수
+        model.addAttribute("totalPages", Math.max(1, noticePageDto.getTotalPages()));  // 총 페이지 수 (0일 경우 1로 설정)
         model.addAttribute("startPage", noticePageDto.getStartPage());  // 네비게이션 시작 페이지
         model.addAttribute("endPage", noticePageDto.getEndPage());  // 네비게이션 끝 페이지
         model.addAttribute("hasPrev", noticePageDto.isHasPrev());  // 이전 페이지 여부
@@ -56,6 +55,7 @@ public class NoticeController {
 
         return "notice/notice-list";
     }
+
 
     @GetMapping("/detail/{id}")
     public String getNoticeDetail(@PathVariable("id") int noticeId, Model model) {

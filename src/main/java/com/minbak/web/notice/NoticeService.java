@@ -16,18 +16,34 @@ public class NoticeService {
         noticeDto.setCreatedAt(LocalDateTime.now()); // 현재 시간 설정
         noticeMapper.insertNotice(noticeDto);
     }
+    public NoticePageDto<NoticeDto> getNoticeList(int currentPage, int pageSize, String searchType, String searchQuery) {
+        int totalNotices;
 
-    //페이지네이션 구현, 전체 목록보기
-    public NoticePageDto<NoticeDto> getNoticeList(int currentPage, int pageSize){
-        //천체 공지사항 개수 조회
-        int totalNotices = noticeMapper.getNoticeCount();
+        if (searchQuery.isEmpty()) {
+            // 검색 조건이 없으면 전체 공지사항 개수 조회
+            totalNotices = noticeMapper.getNoticeCount();
+        } else {
+            // 검색 조건이 있으면 검색된 공지사항 개수 조회
+            totalNotices = noticeMapper.getSearchNoticeCount(searchType, searchQuery);
+        }
 
-        //현재 페이지에 해당하는 공지사항 목록 가져오기
-        int offset = (currentPage - 1 ) * pageSize; // offset 계산하는 것 = offset은 DB에서 데이터를 가져올 때, 몇 번째 항목부터 가져올지 결정하는 값.
-        List<NoticeDto> notices = noticeMapper.getNoticeList(pageSize, offset);
-        // NoticePageDto 생성
+        // 현재 페이지에 해당하는 공지사항 목록 가져오기
+        int offset = (currentPage - 1) * pageSize;
+        List<NoticeDto> notices;
+
+        if (searchQuery.isEmpty()) {
+            // 검색 조건이 없으면 전체 공지사항 목록 가져오기
+            notices = noticeMapper.getNoticeList(pageSize, offset);
+        } else {
+            // 검색 조건이 있을 때는 검색된 공지사항 목록 가져오기
+            notices = noticeMapper.searchNotices(pageSize, offset, searchType, searchQuery);
+        }
+
         return new NoticePageDto<>(currentPage, pageSize, totalNotices, notices);
     }
+
+
+
 
 
 
@@ -43,6 +59,7 @@ public class NoticeService {
     public void deleteNotice(int noticeId) {
         noticeMapper.deleteNotice(noticeId);
     }
+
 
 
 }
