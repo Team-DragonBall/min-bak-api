@@ -3,11 +3,12 @@ package com.minbak.web.notice;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface NoticeMapper {
-
     int insertNotice(NoticeDto noticeDto);
 
     // 전체 공지사항 개수 조회
@@ -28,15 +29,18 @@ public interface NoticeMapper {
     // 공지사항 상세 조회
     NoticeDto getNoticeById(int noticeId);
 
-    // 공지사항 수정
     void updateNotice(NoticeDto noticeDto);
-
-    // 공지사항 삭제
     void deleteNotice(@Param("noticeId") int noticeId);
 
-    // 공지사항 고정/해제
-    void pinNotice(@Param("noticeId") int noticeId, @Param("isPinned") int isPinned);
 
-    // 고정된 공지사항 순서 업데이트
-    void updatePinnedOrder(@Param("noticeId") int noticeId, @Param("newOrder") int newOrder);
+
+    // 공지사항 고정하기
+    void pinNotice(Map<String, Object> params);
+
+    // 공지사항 고정 해제하기
+    void unpinNotice(int noticeId);
+
+    // 고정된 공지사항과 일반 공지사항을 합쳐서 가져오기
+    List<NoticeDto> getNoticesWithPinned();
 }
+

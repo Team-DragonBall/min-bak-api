@@ -46,6 +46,10 @@
       background: #0056b3;
       color: white;
     }
+    .pinned-notice {
+    font-weight: bold;         /* 글씨 굵게 */
+    background-color: #ececec; /* 배경색 */
+    }
   </style>
 </head>
 <body>
@@ -71,26 +75,33 @@
 
   <table>
     <thead>
-    <tr>
-      <th>번호</th>
-      <th>제목</th>
-      <th>작성자</th>
-      <th>작성일</th>
-      <th>고정</th> <!-- 고정 버튼을 위한 열 추가 -->
-    </tr>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>고정</th>  <!-- 고정 상태 추가 -->
+      </tr>
     </thead>
     <tbody>
-    <tr th:each="notice, stat : ${notices}">
-      <td th:text="${stat.count}"></td>
+    <tr th:each="notice: ${notices}"
+        th:classappend="${notice.pinnedNum > 0} ? 'pinned-notice' : ''">
+      <td th:text="${notice.noticeId}"></td>
       <td>
         <a th:href="@{/admin/notice/detail/{id}(id=${notice.noticeId})}" th:text="${notice.title}"></a>
       </td>
       <td th:text="${notice.userId}"></td>
       <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
       <td>
-        <form action="/admin/notice/pin/{id}" method="POST" th:action="@{/admin/notice/pin/{id}(id=${notice.noticeId})}">
-          <button type="submit" th:text="${notice.isPinned == 0 ? '고정' : '해제'}"></button>
-        </form>
+        <span th:if="${notice.pinnedNum > 0}" style="color: red;">고정됨</span>
+        <span th:if="${notice.pinnedNum == 0}">
+      <!-- 고정 버튼 -->
+      <a th:href="@{'/admin/notice/pin?noticeId=' + ${notice.noticeId} + '&pinnedNum=1'}" class="pin-btn">고정</a>
+    </span>
+        <span th:if="${notice.pinnedNum > 0}">
+      <!-- 고정 해제 버튼 -->
+      <a th:href="@{'/admin/notice/unpin?noticeId=' + ${notice.noticeId}}" class="unpin-btn">고정 해제</a>
+    </span>
       </td>
     </tr>
     </tbody>

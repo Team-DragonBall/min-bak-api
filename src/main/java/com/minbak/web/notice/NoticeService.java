@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class NoticeService {
@@ -12,13 +13,10 @@ public class NoticeService {
     @Autowired
     private NoticeMapper noticeMapper;
 
-    // 공지사항 생성
     public void createNotice(NoticeDto noticeDto) {
         noticeDto.setCreatedAt(LocalDateTime.now()); // 현재 시간 설정
         noticeMapper.insertNotice(noticeDto);
     }
-
-    // 공지사항 목록 조회
     public NoticePageDto<NoticeDto> getNoticeList(int currentPage, int pageSize, String searchType, String searchQuery) {
         int totalNotices;
 
@@ -45,28 +43,42 @@ public class NoticeService {
         return new NoticePageDto<>(currentPage, pageSize, totalNotices, notices);
     }
 
-    // 공지사항 상세 조회
+
+    //상세 보기
     public NoticeDto getNoticeById(int noticeId) {
         return noticeMapper.getNoticeById(noticeId);
     }
-
-    // 공지사항 수정
+    //수정
     public void updateNotice(NoticeDto noticeDto) {
         noticeMapper.updateNotice(noticeDto);
     }
-
-    // 공지사항 삭제
+    //삭제
     public void deleteNotice(int noticeId) {
         noticeMapper.deleteNotice(noticeId);
     }
 
-    // 공지사항 고정 또는 해제
-    public void pinNotice(int noticeId, int isPinned) {
-        noticeMapper.pinNotice(noticeId, isPinned);
+
+    // 공지사항 고정하기
+    public void pinNotice(int noticeId, int pinnedNum) {
+        // pinnedNum이 0이면 고정 해제, 1~10 사이의 값을 입력받음
+        if (pinnedNum < 1 || pinnedNum > 10) {
+            throw new IllegalArgumentException("Pinned number must be between 1 and 10.");
+        }
+
+        // 고정할 공지사항을 업데이트
+        Map<String, Object> params = Map.of("noticeId", noticeId, "pinnedNum", pinnedNum);
+        noticeMapper.pinNotice(params);
     }
 
-    // 고정된 공지사항 순서 변경 (선택 사항)
-    public void updatePinnedOrder(int noticeId, int newOrder) {
-        noticeMapper.updatePinnedOrder(noticeId, newOrder);
+    // 공지사항 고정 해제하기
+    public void unpinNotice(int noticeId) {
+        // 고정 해제
+        noticeMapper.unpinNotice(noticeId);
     }
+
+    // 고정된 공지사항과 일반 공지사항 가져오기
+    public List<NoticeDto> getNoticesWithPinned() {
+        return noticeMapper.getNoticesWithPinned();
+    }
+
 }
