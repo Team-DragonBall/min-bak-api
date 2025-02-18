@@ -12,10 +12,13 @@ public class NoticeService {
     @Autowired
     private NoticeMapper noticeMapper;
 
+    // 공지사항 생성
     public void createNotice(NoticeDto noticeDto) {
         noticeDto.setCreatedAt(LocalDateTime.now()); // 현재 시간 설정
         noticeMapper.insertNotice(noticeDto);
     }
+
+    // 공지사항 목록 조회
     public NoticePageDto<NoticeDto> getNoticeList(int currentPage, int pageSize, String searchType, String searchQuery) {
         int totalNotices;
 
@@ -42,24 +45,28 @@ public class NoticeService {
         return new NoticePageDto<>(currentPage, pageSize, totalNotices, notices);
     }
 
-
-
-
-
-
-    //상세 보기
+    // 공지사항 상세 조회
     public NoticeDto getNoticeById(int noticeId) {
         return noticeMapper.getNoticeById(noticeId);
     }
-    //수정
+
+    // 공지사항 수정
     public void updateNotice(NoticeDto noticeDto) {
         noticeMapper.updateNotice(noticeDto);
     }
-    //삭제
+
+    // 공지사항 삭제
     public void deleteNotice(int noticeId) {
         noticeMapper.deleteNotice(noticeId);
     }
 
+    // 공지사항 고정 또는 해제
+    public void pinNotice(int noticeId, int isPinned) {
+        noticeMapper.pinNotice(noticeId, isPinned);
+    }
 
-
+    // 고정된 공지사항 순서 변경 (선택 사항)
+    public void updatePinnedOrder(int noticeId, int newOrder) {
+        noticeMapper.updatePinnedOrder(noticeId, newOrder);
+    }
 }

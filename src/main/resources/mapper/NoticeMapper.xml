@@ -81,4 +81,10 @@
     </select>
 
 
+<!--공지사항 고정 및 순서정하기-->
+    <select id="selectNotices" resultType="NoticeDto">
+        SELECT * FROM notice
+        ORDER BY is_pinned DESC, created_at DESC;
+    </select>
+
 </mapper>

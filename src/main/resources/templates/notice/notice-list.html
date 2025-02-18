@@ -76,6 +76,7 @@
       <th>제목</th>
       <th>작성자</th>
       <th>작성일</th>
+      <th>고정</th> <!-- 고정 버튼을 위한 열 추가 -->
     </tr>
     </thead>
     <tbody>
@@ -86,6 +87,11 @@
       </td>
       <td th:text="${notice.userId}"></td>
       <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+      <td>
+        <form action="/admin/notice/pin/{id}" method="POST" th:action="@{/admin/notice/pin/{id}(id=${notice.noticeId})}">
+          <button type="submit" th:text="${notice.isPinned == 0 ? '고정' : '해제'}"></button>
+        </form>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -101,7 +107,6 @@
        th:text="${page}"
        th:classappend="${page == currentPage} ? 'active' : ''">
     </a>
-
 
     <!-- 다음 페이지 -->
     <a th:if="${currentPage < totalPages}" th:href="@{/admin/notice/list(page=${currentPage + 1})}">다음</a>

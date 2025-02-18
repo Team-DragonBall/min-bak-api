@@ -100,5 +100,18 @@ public String updateNotice(@Valid @ModelAttribute NoticeDto noticeDto, BindingRe
         return "redirect:/admin/notice/list"; // 삭제 후 목록으로 이동
     }
 
+
+
+    // 공지사항 고정 및 해제
+    @PostMapping("/pin/{id}")
+    public String pinNotice(@PathVariable("id") int noticeId) {
+        // 공지사항을 고정/해제 (현재 상태가 고정 상태라면 해제, 아니면 고정)
+        NoticeDto notice = noticeService.getNoticeById(noticeId);
+        int isPinned = (notice.getIsPinned() == 0) ? 1 : 0; // 고정 상태가 아니면 고정, 고정되어 있으면 해제
+        noticeService.pinNotice(noticeId, isPinned);
+        return "redirect:/admin/notice/list"; // 수정 후 목록으로 리다이렉트
+    }
+
+
 }
 

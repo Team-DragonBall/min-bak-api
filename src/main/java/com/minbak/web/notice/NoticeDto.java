@@ -24,4 +24,7 @@ public class NoticeDto {
 
     private String username; // 나중을 대비해서 미리 만들어 둠
 
+    private int isPinned; // 0이면 일반 공지사항, 1이면 고정된 공지사항
+
+
 }
