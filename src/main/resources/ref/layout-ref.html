@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/admin-layout}">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>(페이지 이름)</title>
+
+    <th:block layout:fragment="css">
+
+        @css넣는 곳@
+
+    </th:block>
+
+</head>
+
+<body>
+
+    <th:block layout:fragment="content">
+
+        @메인컨텐트 넣는 곳@
+
+    </th:block>
+
+    <th:block layout:fragment="js">
+
+    @자바스크립트 넣는 곳@ 없으면 비우기
+
+    </th:block>
+
+</body>
+
+</html>
