@@ -77,7 +77,8 @@
                     <th>Use Guide</th>
                     <th>Latitude</th>
                     <th>Longitude</th>
-                    <th>user_email</th>
+                  <th>user_email</th>
+                  <th>reviews</th>
                 </tr>
                 </thead>
               <tbody>
@@ -92,7 +93,7 @@
                 <td th:text="${room.useGuide}"></td>
                 <td th:text="${room.latitude}"></td>
                 <td th:text="${room.longitude}"></td>
-                <td th:text="${room.userEmail}"></td>
+                <td th:each="review : ${room.reviews}"><span th:text="${review.content}"></span></td>
               </tr>
               </tbody>
           </table>

@@ -1,20 +1,22 @@
 package com.minbak.web.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class ReviewDto {
     Integer reviewId;
     Integer userId;
     Integer bookId;
-    //String content;
+    String content;
     Integer score;
 
-    public ReviewDto(Integer reviewId, Integer userId, Integer score) {
-        this.reviewId = reviewId;
-        this.userId = userId;
-        this.score = score;
-    }
+//    public ReviewDto(Integer reviewId, Integer userId, Integer score) {
+//        this.reviewId = reviewId;
+//        this.userId = userId;
+//        this.score = score;
+//    }
 }
 
 

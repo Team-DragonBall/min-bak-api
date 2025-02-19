@@ -82,6 +82,7 @@
 
         <collection property="reviews" ofType="com.minbak.web.dto.ReviewDto">
             <id property="reviewId" column="review_id"/>
+            <result property="content" column="review_content"/>
         </collection>
     </resultMap>
 
@@ -90,11 +91,12 @@
         SELECT
             rm.room_id, rm.name, rm.content, rm.address, rm.price, rm.use_guide,
             rm.latitude, rm.longitude,
-            ur.email
-            rv_bk.review_id
+            ur.email,
+            rv_bk.review_id,
+            rv_bk.content AS review_content
         FROM rooms rm
             INNER JOIN users ur on rm.user_id = ur.user_id
-            INNER JOIN (SELECT rv.review_id, bk.room_id FROM review rv INNER JOIN books bk ON rv.book_id = bk.book_id) rv_bk ON rv_bk.room_id = rm.room_id
+            INNER JOIN (SELECT rv.review_id, rv.content, bk.room_id FROM review rv INNER JOIN books bk ON rv.book_id = bk.book_id) rv_bk ON rv_bk.room_id = rm.room_id
         ORDER BY rm.room_id DESC
         LIMIT #{size} OFFSET #{offset};
     </select>
