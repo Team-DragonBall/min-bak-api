@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 
 public class CategoriesService {
 
@@ -38,13 +39,14 @@ public class CategoriesService {
     }
 
     // 카테고리 삭제
+    @Transactional
     public int deleteCategory(int id) {
         return categoriesMapper.deleteCategory(id);
     }
 
 
     // ✅ 카테고리 순서 변경 (드래그 앤 드롭)
-    @Transactional
+    @Transactional(noRollbackFor = IllegalArgumentException.class)
     public void changeCategoryOrder(int categoryId, int newOrder) {
         // 기존 카테고리 정보 가져오기
         CategoriesDto category = categoriesMapper.findCategoryById(categoryId);

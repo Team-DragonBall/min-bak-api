@@ -33,29 +33,29 @@
 
     <!-- 5. 카테고리 삭제 -->
     <delete id="deleteCategory" parameterType="int">
-        DELETE FROM categories
-        WHERE category_id = #{categoryId}
+        DELETE FROM categories WHERE category_id = #{categoryId}
     </delete>
 
 
-    <!-- 6. 특정 카테고리의 순서 수동 변경 -->
-<!--    <update id="updateCategoryOrder11" parameterType="com.minbak.web.categories.CategoriesDto">-->
-<!--        UPDATE categories-->
-<!--        SET category_order = #{categoryOrder}-->
-<!--        WHERE category_id = #{categoryId}-->
-<!--    </update>-->
+<!--     6. 특정 카테고리의 순서 수동 변경 -->
+    <update id="updateCategoryOrder11" parameterType="com.minbak.web.categories.CategoriesDto">
+        UPDATE categories
+        SET category_order = #{categoryOrder}
+        WHERE category_id = #{categoryId}
+    </update>
 
-     7. 기존 순서를 조정하면서 카테고리 순서 변경
+<!--     7. 기존 순서를 조정하면서 카테고리 순서 변경-->
     <update id="reorderCategories111">
         UPDATE categories
         SET category_order =
         CASE
         WHEN category_id = #{categoryId} THEN #{newOrder}
-        WHEN category_order >= #{newOrder} AND category_order < #{oldOrder} THEN category_order + 1
-        WHEN category_order <= #{newOrder} AND category_order > #{oldOrder} THEN category_order - 1
+        WHEN category_order &gt;= #{newOrder} AND category_order &lt; #{oldOrder} THEN category_order + 1
+        WHEN category_order &lt;= #{newOrder} AND category_order &gt; #{oldOrder} THEN category_order - 1
         ELSE category_order
         END
-        WHERE category_order BETWEEN #{minOrder} AND #{maxOrder}
+        WHERE category_order BETWEEN COALESCE(#{minOrder}, 0) AND COALESCE(#{maxOrder}, 1000000)
     </update>
+
 
 </mapper>
