@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.categories.CategoriesMapper">
+
+    <!-- 1. 전체 카테고리 조회 (순서 적용) -->
+    <select id="findAllCategories" resultType="com.minbak.web.categories.CategoriesDto">
+        SELECT category_id, name, category_order
+        FROM categories
+        ORDER BY category_order ASC
+    </select>
+
+    <!-- 2. 단일 카테고리 조회 (ID 기준) -->
+    <select id="findCategoryById" parameterType="int" resultType="com.minbak.web.categories.CategoriesDto">
+        SELECT category_id, name
+        FROM categories
+        WHERE category_id = #{categoryId}
+    </select>
+
+    <!-- 3. 새 카테고리 삽입 -->
+    <insert id="createCategory" parameterType="com.minbak.web.categories.CategoriesDto" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO categories (name)
+        VALUES (#{name})
+    </insert>
+
+    <!-- 4. 카테고리 업데이트(수정) -->
+    <update id="updateCategory" parameterType="com.minbak.web.categories.CategoriesDto">
+        UPDATE categories
+        SET name = #{name}
+        WHERE category_id = #{categoryId}
+    </update>
+
+    <!-- 5. 카테고리 삭제 -->
+    <delete id="deleteCategory" parameterType="int">
+        DELETE FROM categories
+        WHERE category_id = #{categoryId}
+    </delete>
+
+
+    <!-- 6. 특정 카테고리의 순서 수동 변경 -->
+<!--    <update id="updateCategoryOrder11" parameterType="com.minbak.web.categories.CategoriesDto">-->
+<!--        UPDATE categories-->
+<!--        SET category_order = #{categoryOrder}-->
+<!--        WHERE category_id = #{categoryId}-->
+<!--    </update>-->
+
+     7. 기존 순서를 조정하면서 카테고리 순서 변경
+    <update id="reorderCategories111">
+        UPDATE categories
+        SET category_order =
+        CASE
+        WHEN category_id = #{categoryId} THEN #{newOrder}
+        WHEN category_order >= #{newOrder} AND category_order < #{oldOrder} THEN category_order + 1
+        WHEN category_order <= #{newOrder} AND category_order > #{oldOrder} THEN category_order - 1
+        ELSE category_order
+        END
+        WHERE category_order BETWEEN #{minOrder} AND #{maxOrder}
+    </update>
+
+</mapper>
