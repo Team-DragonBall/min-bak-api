@@ -35,6 +35,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok' //롬복
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' //기본
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher' //기본
+	// https://mvnrepository.com/artifact/com.paypal.sdk/rest-api-sdk/1.14.0
+	implementation 'com.paypal.sdk:rest-api-sdk:1.14.0'
 }
 
 tasks.named('test') {
