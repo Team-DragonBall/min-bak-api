@@ -35,10 +35,23 @@ public class CategoriesController {
 
     // [C] 신규 카테고리 등록 처리
     @PostMapping
-    public String createCategory(@ModelAttribute("category") CategoriesDto categoriesDto) {
-        categoriesService.createCategory(categoriesDto);
-        return "redirect:/admin/categories"; // 리다이렉트 URL 수정
+    public String createCategory(@ModelAttribute("category") CategoriesDto categoriesDto, Model model) {
+        try {
+            categoriesService.createCategory(categoriesDto);
+            return "redirect:/admin/categories";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "categories/category-Create"; // 다시 입력 폼으로 이동
+        }
     }
+    // 중복 확인 API 추가
+    @GetMapping("/check-duplicate")
+    @ResponseBody
+    public Map<String, Boolean> checkDuplicate(@RequestParam String name) {
+        boolean duplicate = categoriesService.getCategoryByName(name) != null;
+        return Map.of("duplicate", duplicate);
+    }
+
 
     // [U] 기존 카테고리 수정 폼 표시
     @GetMapping("/edit/{id}")

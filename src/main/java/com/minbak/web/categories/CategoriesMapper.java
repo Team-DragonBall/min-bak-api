@@ -2,6 +2,7 @@ package com.minbak.web.categories;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
@@ -34,4 +35,11 @@ public interface CategoriesMapper {
                                @Param("oldOrder") int oldOrder,
                                @Param("minOrder") int minOrder,
                                @Param("maxOrder") int maxOrder);
+
+        //새로운 카테고리 이름이 중복되는지 확인용
+        @Select("SELECT COUNT(*) FROM categories WHERE name = #{name}")
+        int countByName(@Param("name") String name);
+        // 중복 확인 API 추가
+        @Select("SELECT * FROM categories WHERE name = #{name} LIMIT 1")
+        CategoriesDto findCategoryByName(@Param("name") String name);
 }

@@ -2,6 +2,7 @@ package com.minbak.web.categories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -28,9 +29,18 @@ public class CategoriesService {
         return categoriesMapper.findCategoryById(id);
     }
 
-    // 새 카테고리 생성
+    // 새 카테고리 생성 + 중복 검사
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public int createCategory(CategoriesDto categoriesDto) {
+        int count = categoriesMapper.countByName(categoriesDto.getName());
+        if (count > 0) {
+            throw new IllegalArgumentException("이미 존재하는 카테고리 이름입니다.");
+        }
         return categoriesMapper.createCategory(categoriesDto);
+    }
+    // 중복 확인 API 추가
+    public CategoriesDto getCategoryByName(String name) {
+        return categoriesMapper.findCategoryByName(name);
     }
 
     // 카테고리 수정
@@ -63,6 +73,5 @@ public class CategoriesService {
         // 기존 카테고리들의 순서를 자동 정렬
         categoriesMapper.reorderCategories111(categoryId, newOrder, oldOrder, minOrder, maxOrder);
     }
-
 
 }

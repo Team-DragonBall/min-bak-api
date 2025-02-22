@@ -19,6 +19,7 @@ public class BoardCategoriesService {
 
     //모든 카테고리 순서대로 가져오기
     public List<BoardCategoryDto> findOrderedCategories(){
+
         return boardCategoriesMapper.findOrderedCategories();
     }
 

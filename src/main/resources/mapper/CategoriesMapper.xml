@@ -38,11 +38,11 @@
 
 
 <!--     6. 특정 카테고리의 순서 수동 변경 -->
-    <update id="updateCategoryOrder11" parameterType="com.minbak.web.categories.CategoriesDto">
-        UPDATE categories
-        SET category_order = #{categoryOrder}
-        WHERE category_id = #{categoryId}
-    </update>
+<!--    <update id="updateCategoryOrder11" parameterType="com.minbak.web.categories.CategoriesDto">-->
+<!--        UPDATE categories-->
+<!--        SET category_order = #{categoryOrder}-->
+<!--        WHERE category_id = #{categoryId}-->
+<!--    </update>-->
 
 <!--     7. 기존 순서를 조정하면서 카테고리 순서 변경-->
     <update id="reorderCategories111">
