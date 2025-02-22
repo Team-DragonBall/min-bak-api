@@ -20,9 +20,10 @@
 
     <!-- 3. 새 카테고리 삽입 -->
     <insert id="createCategory" parameterType="com.minbak.web.categories.CategoriesDto" useGeneratedKeys="true" keyProperty="categoryId">
-        INSERT INTO categories (name)
-        VALUES (#{name})
+        INSERT INTO categories (name, category_order)
+        SELECT #{name}, COALESCE(MAX(category_order), 0) + 1 FROM (SELECT category_order FROM categories) AS temp
     </insert>
+
 
     <!-- 4. 카테고리 업데이트(수정) -->
     <update id="updateCategory" parameterType="com.minbak.web.categories.CategoriesDto">

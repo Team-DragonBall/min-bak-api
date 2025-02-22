@@ -36,6 +36,8 @@ public class CategoriesService {
         if (count > 0) {
             throw new IllegalArgumentException("이미 존재하는 카테고리 이름입니다.");
         }
+
+        // 자동으로 category_order 값을 설정하여 삽입
         return categoriesMapper.createCategory(categoriesDto);
     }
     // 중복 확인 API 추가
