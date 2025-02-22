@@ -18,7 +18,7 @@
         WHERE category_id = #{categoryId}
     </select>
 
-    <!-- 3. 새 카테고리 삽입 -->
+    <!-- 3. 새 카테고리 삽입 + category_order 순서 -->
     <insert id="createCategory" parameterType="com.minbak.web.categories.CategoriesDto" useGeneratedKeys="true" keyProperty="categoryId">
         INSERT INTO categories (name, category_order)
         SELECT #{name}, COALESCE(MAX(category_order), 0) + 1 FROM (SELECT category_order FROM categories) AS temp
