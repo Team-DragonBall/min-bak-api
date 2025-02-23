@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+//APIContext를 빈으로 등록하는 설정코드.
 public class PayPalConfig {
     @Value("${paypal.client.id}")
     private String clientId;
