@@ -1,127 +1,111 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
 <head>
   <meta charset="UTF-8">
   <title>카테고리 목록</title>
-  <!-- 부트스트랩 CSS 추가 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-  <style>
-    main {
-      width: 1680px;
-      margin: 50px auto;
-      padding: 30px;
-      background-color: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      margin-bottom: 30px;
-      text-align: center;
-    }
-    table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
-    }
-    .btn-custom {
-      padding: 8px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
-    .action-btns button {
-      margin-right: 10px;
-    }
-    /* 드래그 가능하도록 스타일 추가 */
-    tbody tr {
-      cursor: grab;
-    }
-  </style>
+  <th:block layout:fragment="css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      .main-content {
+          width: 1680px;
+          height: 100vh;
+          overflow-y:auto;
+          padding: 20px;
+          margin: 50px auto;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        margin-top: 15px;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 8px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      .btn-custom {
+        padding: 6px 15px;
+        font-size: 14px;
+        border-radius: 4px;
+        margin-top: 5px;
+      }
+      .action-btns button {
+        margin-right: 5px;
+      }
+      tbody tr {
+        cursor: grab;
+      }
+    </style>
+  </th:block>
 </head>
 <body>
+<th:block layout:fragment="content">
+  <main class="main-content">
+    <h1>카테고리 목록</h1>
 
-<main>
-  <h1>카테고리 목록</h1>
+    <div class="text-end mb-3">
+      <a th:href="@{/admin/categories/create}">
+        <button type="button" class="btn btn-primary btn-custom">생성하기</button>
+      </a>
+    </div>
 
-  <!-- 생성하기 버튼 -->
-  <div class="text-end mb-3">
-    <a th:href="@{/admin/categories/create}">
-      <button type="button" class="btn btn-primary btn-custom">생성하기</button>
-    </a>
-  </div>
+    <table class="table table-bordered">
+      <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>카테고리 이름</th>
+        <th>액션</th>
+      </tr>
+      </thead>
+      <tbody id="sortable">
+      <tr th:each="category : ${categories}" th:data-id="${category.categoryId}" th:data-order="${category.categoryOrder}">
+        <td th:text="${category.categoryId}">ID</td>
+        <td>
+          <img th:src="${category.categoryiconUrl}" alt="" width="40" height="40">
+          <span th:text="${category.name}"></span>
+        </td>
+        <td class="action-btns">
+          <a th:href="@{/admin/categories/edit/{id}(id=${category.categoryId})}">
+            <button type="button" class="btn btn-warning btn-custom">수정</button>
+          </a>
+          <form th:action="@{/admin/categories/delete/{id}(id=${category.categoryId})}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-custom" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </main>
+</th:block>
 
-  <!-- 카테고리 목록 테이블 -->
-  <table class="table table-bordered">
-    <thead class="table-dark">
-    <tr>
-      <th>ID</th>
-      <th>카테고리 이름</th>
-      <th>액션</th>
-    </tr>
-    </thead>
-    <tbody id="sortable">
-    <tr th:each="category : ${categories}" th:data-id="${category.categoryId}" th:data-order="${category.categoryOrder}">
-      <td th:text="${category.categoryId}">ID</td>
-      <td>
-        <!-- 카테고리 아이콘 표시 -->
-        <img th:src="${category.categoryiconUrl}" alt="" width="50" height="50">
-        <span th:text="${category.name}"></span>
-      </td>
-      <td class="action-btns">
-        <!-- 수정 버튼 -->
-        <a th:href="@{/admin/categories/edit/{id}(id=${category.categoryId})}">
-          <button type="button" class="btn btn-warning btn-custom">수정하기</button>
-        </a>
-        <!-- 삭제 버튼 -->
-        <form th:action="@{/admin/categories/delete/{id}(id=${category.categoryId})}" method="post" style="display:inline;">
-          <button type="submit" class="btn btn-danger btn-custom" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
-        </form>
-      </td>
-    </tr>
-    </tbody>
-
-  </table>
-</main>
-
-<!-- 부트스트랩 JS 추가 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- ✅ jQuery UI Sortable 적용 -->
-<script>
-  $(document).ready(function () {
-    $("#sortable").sortable({
-      update: function (event, ui) {
-        var categoryId = ui.item.data("id");
-        var newIndex = ui.item.index() + 1; // 1부터 시작하는 순서
-
-        $.ajax({
-          url: "/admin/categories/reorder",
-          type: "PUT",
-          contentType: "application/json",
-          data: JSON.stringify({
-            categoryId: categoryId,
-            newOrder: newIndex
-          }),
-          success: function (response) {
-            alert("순서가 변경되었습니다.");
-          },
-          error: function (xhr) {
-            alert("오류 발생: " + xhr.responseText);
-          }
-        });
-      }
-    }).disableSelection();
-  });
-</script>
-
-
-
+<th:block layout:fragment="js">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#sortable").sortable({
+        update: function (event, ui) {
+          var categoryId = ui.item.data("id");
+          var newIndex = ui.item.index() + 1;
+          $.ajax({
+            url: "/admin/categories/reorder",
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify({ categoryId: categoryId, newOrder: newIndex }),
+            success: function () { alert("순서가 변경되었습니다."); },
+            error: function (xhr) { alert("오류 발생: " + xhr.responseText); }
+          });
+        }
+      }).disableSelection();
+    });
+  </script>
+</th:block>
 </body>
 </html>
