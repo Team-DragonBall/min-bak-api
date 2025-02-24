@@ -67,23 +67,26 @@
     </tr>
     </thead>
     <tbody id="sortable">
-    <tr th:each="category : ${categories}"
-        th:data-id="${category.categoryId}"
-        th:data-order="${category.categoryOrder}">
+    <tr th:each="category : ${categories}" th:data-id="${category.categoryId}" th:data-order="${category.categoryOrder}">
       <td th:text="${category.categoryId}">ID</td>
-      <td th:text="${category.name}">카테고리 이름</td>
+      <td>
+        <!-- 카테고리 아이콘 표시 -->
+        <img th:src="${category.categoryiconUrl}" alt="카테고리 아이콘" width="50" height="50">
+        <span th:text="${category.name}"></span>
+      </td>
       <td class="action-btns">
-        <!-- 수정하기 버튼 -->
+        <!-- 수정 버튼 -->
         <a th:href="@{/admin/categories/edit/{id}(id=${category.categoryId})}">
           <button type="button" class="btn btn-warning btn-custom">수정하기</button>
         </a>
-        <!-- 삭제하기 버튼 -->
+        <!-- 삭제 버튼 -->
         <form th:action="@{/admin/categories/delete/{id}(id=${category.categoryId})}" method="post" style="display:inline;">
           <button type="submit" class="btn btn-danger btn-custom" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
         </form>
       </td>
     </tr>
     </tbody>
+
   </table>
 </main>
 

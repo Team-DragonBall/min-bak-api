@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>공지사항 수정</title>
+    <style>
+        .error {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<form th:object="${noticeDto}" th:action="@{/admin/notice/update}" method="post">
+    <input type="hidden" th:field="*{noticeId}" /> <!-- userId 값이 hidden input으로 전달. null이 되는 문제를 해결.-->
+    <input type="hidden" th:field="*{userId}" /> <!-- userId 추가 -->
+
+    <label>제목:</label>
+    <input type="text" th:field="*{title}" required />
+    <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+
+    <label>내용:</label>
+    <textarea th:field="*{content}" required></textarea>
+    <div class="error" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></div>
+
+    <button type="submit">수정하기</button>
+</form>
+
+</body>
+</html>

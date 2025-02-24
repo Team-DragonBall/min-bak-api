@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항 목록</title>
+  <style>
+    main { width: 1200px; height: 960px; margin: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    th { background-color: #f4f4f4; }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .create-btn {
+      padding: 8px 16px;
+      background: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .create-btn:hover {
+      background: #0056b3;
+    }
+    /* 페이징 스타일 */
+    .pagination {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .pagination a {
+      display: inline-block;
+      padding: 8px 12px;
+      margin: 0 5px;
+      text-decoration: none;
+      border: 1px solid #007bff;
+      color: #007bff;
+      border-radius: 5px;
+    }
+    .pagination a.active {
+      background: #007bff;
+      color: white;
+    }
+    .pagination a:hover {
+      background: #0056b3;
+      color: white;
+    }
+    .pinned-notice {
+    font-weight: bold;         /* 글씨 굵게 */
+    background-color: #ececec; /* 배경색 */
+    }
+  </style>
+</head>
+<body>
+<main>
+  <div class="top-bar">
+    <h2>공지사항 목록</h2>
+    <a th:href="@{/admin/notice/create}" class="create-btn">글쓰기</a>
+
+    <!-- 검색 폼 -->
+    <form th:action="@{/admin/notice/list}" method="get">
+      <label for="searchType">검색 기준:</label>
+      <select name="searchType" id="searchType">
+        <option value="title" th:selected="${searchType == 'title'}">제목</option>
+        <option value="content" th:selected="${searchType == 'content'}">내용</option>
+      </select>
+
+      <input type="text" name="searchQuery" id="searchQuery" placeholder="검색어 입력"
+             th:value="${searchQuery}" />
+
+      <button type="submit">검색</button>
+    </form>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>고정</th>  <!-- 고정 상태 추가 -->
+      </tr>
+    </thead>
+    <tbody>
+    <tr th:each="notice: ${notices}"
+        th:classappend="${notice.pinnedNum > 0} ? 'pinned-notice' : ''">
+      <td th:text="${notice.noticeId}"></td>
+      <td>
+        <a th:href="@{/admin/notice/detail/{id}(id=${notice.noticeId})}" th:text="${notice.title}"></a>
+      </td>
+      <td th:text="${notice.userId}"></td>
+      <td th:text="${#temporals.format(notice.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+      <td>
+        <span th:if="${notice.pinnedNum > 0}" style="color: red;">고정됨</span>
+        <span th:if="${notice.pinnedNum == 0}">
+      <!-- 고정 버튼 -->
+      <a th:href="@{'/admin/notice/pin?noticeId=' + ${notice.noticeId} + '&pinnedNum=1'}" class="pin-btn">고정</a>
+    </span>
+        <span th:if="${notice.pinnedNum > 0}">
+      <!-- 고정 해제 버튼 -->
+      <a th:href="@{'/admin/notice/unpin?noticeId=' + ${notice.noticeId}}" class="unpin-btn">고정 해제</a>
+    </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- 페이징 UI -->
+  <div class="pagination">
+    <!-- 이전 페이지 -->
+    <a th:if="${currentPage > 1}" th:href="@{/admin/notice/list(page=${currentPage - 1})}">이전</a>
+
+    <!-- 페이지 번호 -->
+    <a th:each="page : ${#numbers.sequence(1, totalPages)}"
+       th:href="@{/admin/notice/list(page=${page})}"
+       th:text="${page}"
+       th:classappend="${page == currentPage} ? 'active' : ''">
+    </a>
+
+    <!-- 다음 페이지 -->
+    <a th:if="${currentPage < totalPages}" th:href="@{/admin/notice/list(page=${currentPage + 1})}">다음</a>
+  </div>
+
+</main>
+</body>
+</html>

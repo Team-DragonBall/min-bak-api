@@ -21,6 +21,13 @@ public interface CategoriesMapper {
 
         // 카테고리 삭제
         int deleteCategory(int id);
+        // 카테고리 순서 업데이트
+        @Update("UPDATE categories SET category_order = #{categoryOrder} WHERE category_id = #{categoryId}")
+        void updateCategoryOrder(@Param("categoryId") int categoryId, @Param("categoryOrder") int categoryOrder);
+
+        // 카테고리 아이콘 URL 추가/수정
+        void updateCategoryIcon(@Param("categoryId") int categoryId, @Param("categoryiconUrl") String categoryiconUrl);
+
 
         // 카테고리 순서 업데이트 (개별적으로 변경)
         @Update("UPDATE categories SET category_order = #{categoryOrder} WHERE category_id = #{categoryId}")

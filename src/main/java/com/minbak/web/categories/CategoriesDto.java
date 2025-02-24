@@ -9,4 +9,6 @@ public class CategoriesDto {
     private Integer categoryId; // 데이터베이스의 category_id 컬럼과 매핑
     private String name;        // 카테고리 이름
     private int categoryOrder; // 순서 변경용
+    private String categoryiconUrl;  // 카테고리 아이콘 URL 추가
+
 }

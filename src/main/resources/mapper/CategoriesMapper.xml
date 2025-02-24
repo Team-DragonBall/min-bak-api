@@ -4,31 +4,31 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.minbak.web.categories.CategoriesMapper">
 
-    <!-- 1. 전체 카테고리 조회 (순서 적용) -->
+    <!-- 1. 전체 카테고리 조회 (아이콘 URL 포함) -->
     <select id="findAllCategories" resultType="com.minbak.web.categories.CategoriesDto">
-        SELECT category_id, name, category_order
+        SELECT category_id, name, category_order, categoryicon_url
         FROM categories
         ORDER BY category_order ASC
     </select>
 
-    <!-- 2. 단일 카테고리 조회 (ID 기준) -->
+    <!-- 2. 단일 카테고리 조회 -->
     <select id="findCategoryById" parameterType="int" resultType="com.minbak.web.categories.CategoriesDto">
-        SELECT category_id, name
+        SELECT category_id, name, category_order, categoryicon_url
         FROM categories
         WHERE category_id = #{categoryId}
     </select>
 
-    <!-- 3. 새 카테고리 삽입 + category_order 순서 -->
+    <!-- 3. 새 카테고리 삽입 (아이콘 URL 포함) -->
     <insert id="createCategory" parameterType="com.minbak.web.categories.CategoriesDto" useGeneratedKeys="true" keyProperty="categoryId">
-        INSERT INTO categories (name, category_order)
-        SELECT #{name}, COALESCE(MAX(category_order), 0) + 1 FROM (SELECT category_order FROM categories) AS temp
+        INSERT INTO categories (name, category_order, categoryicon_url)
+        SELECT #{name}, COALESCE(MAX(category_order), 0) + 1, #{categoryiconUrl}
+        FROM (SELECT category_order FROM categories) AS temp
     </insert>
 
-
-    <!-- 4. 카테고리 업데이트(수정) -->
+    <!-- 4. 카테고리 수정 (아이콘 URL 포함) -->
     <update id="updateCategory" parameterType="com.minbak.web.categories.CategoriesDto">
         UPDATE categories
-        SET name = #{name}
+        SET name = #{name}, categoryicon_url = #{categoryiconUrl}
         WHERE category_id = #{categoryId}
     </update>
 
@@ -37,15 +37,14 @@
         DELETE FROM categories WHERE category_id = #{categoryId}
     </delete>
 
+    <!-- 6. 아이콘 URL 업데이트 -->
+    <update id="updateCategoryIcon">
+        UPDATE categories
+        SET categoryicon_url = #{categoryiconUrl}
+        WHERE category_id = #{categoryId}
+    </update>
 
-<!--     6. 특정 카테고리의 순서 수동 변경 -->
-<!--    <update id="updateCategoryOrder11" parameterType="com.minbak.web.categories.CategoriesDto">-->
-<!--        UPDATE categories-->
-<!--        SET category_order = #{categoryOrder}-->
-<!--        WHERE category_id = #{categoryId}-->
-<!--    </update>-->
-
-<!--     7. 기존 순서를 조정하면서 카테고리 순서 변경-->
+    <!-- 7. 기존 순서를 조정하면서 카테고리 순서 변경-->
     <update id="reorderCategories111">
         UPDATE categories
         SET category_order =
@@ -57,6 +56,13 @@
         END
         WHERE category_order BETWEEN COALESCE(#{minOrder}, 0) AND COALESCE(#{maxOrder}, 1000000)
     </update>
+
+<!--      특정 카테고리의 순서 수동 변경 -->
+<!--    <update id="updateCategoryOrder11" parameterType="com.minbak.web.categories.CategoriesDto">-->
+<!--        UPDATE categories-->
+<!--        SET category_order = #{categoryOrder}-->
+<!--        WHERE category_id = #{categoryId}-->
+<!--    </update>-->
 
 
 </mapper>

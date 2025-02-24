@@ -23,17 +23,17 @@ public class CategoriesController {
     @GetMapping
     public String showCategoriesList(Model model) {
         model.addAttribute("categories", categoriesService.getAllCategories());
-        return "categories/categories-List";  // templates/categores/categories-List.html
+        return "categories/categories-List";
     }
 
     // [C] 신규 카테고리 등록 폼 표시
     @GetMapping("/create")
     public String showCreateCategoryForm(Model model) {
         model.addAttribute("category", new CategoriesDto());
-        return "categories/category-Create";  // 템플릿 파일 이름에 맞게 변경
+        return "categories/category-Create";
     }
 
-    // [C] 신규 카테고리 등록 처리
+    // [C] 신규 카테고리 등록 처리 (아이콘 URL 포함)
     @PostMapping
     public String createCategory(@ModelAttribute("category") CategoriesDto categoriesDto, Model model) {
         try {
@@ -41,27 +41,28 @@ public class CategoriesController {
             return "redirect:/admin/categories";
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            return "categories/category-Create"; // 다시 입력 폼으로 이동
+            return "categories/category-Create";
         }
     }
-    // 중복 확인 API 추가
-    @GetMapping("/check-duplicate")
-    @ResponseBody
-    public Map<String, Boolean> checkDuplicate(@RequestParam String name) {
-        boolean duplicate = categoriesService.getCategoryByName(name) != null;
-        return Map.of("duplicate", duplicate);
-    }
 
+    // ✅ 카테고리 아이콘 URL만 변경 (AJAX 요청)
+    @PutMapping("/{id}/icon")
+    @ResponseBody
+    public ResponseEntity<?> updateCategoryIcon(@PathVariable int id, @RequestBody Map<String, String> request) {
+        String newIconUrl = request.get("categoryiconUrl");
+        categoriesService.updateCategoryIcon(id, newIconUrl);
+        return ResponseEntity.ok().body("아이콘이 업데이트되었습니다.");
+    }
 
     // [U] 기존 카테고리 수정 폼 표시
     @GetMapping("/edit/{id}")
     public String showEditCategoryForm(@PathVariable int id, Model model) {
         CategoriesDto category = categoriesService.getCategoryById(id);
         model.addAttribute("category", category);
-        return "categories/category-Update";  // 수정 폼 템플릿
+        return "categories/category-Update";
     }
 
-    // [U] 카테고리 수정 처리
+    // [U] 카테고리 수정 처리 (아이콘 URL 포함)
     @PostMapping("/{id}")
     public String updateCategory(@PathVariable int id, @ModelAttribute("category") CategoriesDto categoriesDto) {
         categoriesDto.setCategoryId(id);
@@ -75,6 +76,7 @@ public class CategoriesController {
         categoriesService.deleteCategory(id);
         return "redirect:/admin/categories";
     }
+
 
     // ✅ [U] 드래그 앤 드롭을 통한 카테고리 순서 변경 (AJAX 요청 처리)
     @PutMapping("/reorder")

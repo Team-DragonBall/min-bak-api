@@ -9,7 +9,6 @@ import java.util.List;
 
 @Service
 @Transactional
-
 public class CategoriesService {
 
     private final CategoriesMapper categoriesMapper;
@@ -37,15 +36,11 @@ public class CategoriesService {
             throw new IllegalArgumentException("이미 존재하는 카테고리 이름입니다.");
         }
 
-        // 자동으로 category_order 값을 설정하여 삽입
+        // 새로운 카테고리 추가 (아이콘 URL 포함)
         return categoriesMapper.createCategory(categoriesDto);
     }
-    // 중복 확인 API 추가
-    public CategoriesDto getCategoryByName(String name) {
-        return categoriesMapper.findCategoryByName(name);
-    }
 
-    // 카테고리 수정
+    // 카테고리 수정 (아이콘 URL 포함)
     public int updateCategory(CategoriesDto categoriesDto) {
         return categoriesMapper.updateCategory(categoriesDto);
     }
@@ -56,8 +51,7 @@ public class CategoriesService {
         return categoriesMapper.deleteCategory(id);
     }
 
-
-    // ✅ 카테고리 순서 변경 (드래그 앤 드롭)
+    // 카테고리 순서 변경 (드래그 앤 드롭)
     @Transactional(noRollbackFor = IllegalArgumentException.class)
     public void changeCategoryOrder(int categoryId, int newOrder) {
         // 기존 카테고리 정보 가져오기
@@ -76,4 +70,8 @@ public class CategoriesService {
         categoriesMapper.reorderCategories111(categoryId, newOrder, oldOrder, minOrder, maxOrder);
     }
 
+    // 카테고리 아이콘 URL 변경
+    public void updateCategoryIcon(int categoryId, String categoryiconUrl) {
+        categoriesMapper.updateCategoryIcon(categoryId, categoryiconUrl);
+    }
 }

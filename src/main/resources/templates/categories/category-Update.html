@@ -41,16 +41,27 @@
   <h1>카테고리 수정</h1>
 
   <form th:action="@{/admin/categories/{id}(id=${category.categoryId})}" th:object="${category}" method="post">
-    <!-- 카테고리 이름 수정 -->
     <div class="form-group">
       <label for="name">카테고리 이름:</label>
       <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="카테고리 이름을 입력하세요" required />
+    </div>
+
+    <div class="form-group">
+      <label for="categoryiconUrl">카테고리 아이콘 URL:</label>
+      <input type="text" id="categoryiconUrl" th:field="*{categoryiconUrl}" class="form-control" placeholder="아이콘 URL을 입력하세요" required />
+    </div>
+
+    <div class="form-group text-center">
+      <!-- 기존 아이콘 미리보기 -->
+      <p>현재 아이콘:</p>
+      <img th:src="${category.categoryiconUrl}" alt="카테고리 아이콘" width="100" height="100">
     </div>
 
     <div class="text-center">
       <button type="submit" class="btn btn-primary btn-custom">수정</button>
     </div>
   </form>
+
 
   <div class="text-center">
     <p>
