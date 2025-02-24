@@ -1,84 +1,92 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base/layout-sample}">
 <head>
   <meta charset="UTF-8">
   <title>공지사항 상세</title>
-  <style>
-    body {
-        width: 1200px;
-        height: 960px;
-        margin: 0 auto;
-        font-family: Arial, sans-serif;
-    }
-    main {
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-        background: #f9f9f9;
-    }
-    h1 {
-        text-align: center;
-    }
-    .info {
-        margin-bottom: 20px;
-    }
-    .info label {
-        font-weight: bold;
-    }
-    .button-container {
-        text-align: center;
-        margin-top: 20px;
-    }
-    .button-container a, .button-container form button {
-        text-decoration: none;
-        padding: 10px 20px;
-        background: #007bff;
-        color: white;
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-    }
-    .button-container a:hover, .button-container form button:hover {
-        background: #0056b3;
-    }
-    .delete-btn {
-        background: #dc3545 !important;
-    }
-    .delete-btn:hover {
-        background: #a71d2a !important;
-    }
-  </style>
+  <th:block layout:fragment="css">
+    <style>
+      main {
+          width: 800px;
+          margin: 50px auto;
+          padding: 20px;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+          background: #fff;
+      }
+      h1 {
+          text-align: center;
+          margin-bottom: 20px;
+      }
+      .info {
+          margin-bottom: 15px;
+          font-size: 16px;
+      }
+      .info label {
+          font-weight: bold;
+      }
+      .button-container {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 20px;
+      }
+      .button-container a, .button-container form button {
+          text-decoration: none;
+          padding: 10px 20px;
+          border: none;
+          cursor: pointer;
+          border-radius: 5px;
+          font-size: 14px;
+          font-weight: bold;
+      }
+      .edit-btn {
+          background: #007bff;
+          color: white;
+      }
+      .delete-btn {
+          background: #dc3545;
+          color: white;
+      }
+      .back-btn {
+          background: #17a2b8;
+          color: white;
+      }
+      .edit-btn:hover { background: #0056b3; }
+      .delete-btn:hover { background: #a71d2a; }
+      .back-btn:hover { background: #138496; }
+    </style>
+  </th:block>
 </head>
 <body>
-<main>
-  <h1>공지사항 상세</h1>
-  <div class="info">
-    <label>제목:</label> <span th:text="${help.title}"></span>
-  </div>
-  <div class="info">
-    <label>작성자 ID:</label> <span th:text="${help.userId}"></span>
-  </div>
-  <div class="info">
-    <label>작성 날짜:</label> <span th:text="${#temporals.format(help.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
-  </div>
-  <div class="info">
-    <label>내용:</label>
-    <p th:text="${help.content}"></p>
-  </div>
-
-  <div class="button-container">
-    <!-- 수정하기 버튼 -->
-    <a th:href="@{/admin/help/update/{id}(id=${help.noticeId})}">수정하기</a>
-
-    <!-- 삭제 버튼 -->
-    <form th:action="@{/admin/help/delete/{id}(id=${help.noticeId})}" method="post">
-      <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
-    </form>
-
-    <!-- 목록으로 돌아가기 -->
-    <a th:href="@{/admin/help/list}">목록으로</a>
-  </div>
-</main>
+<th:block layout:fragment="content">
+  <main>
+    <h1>공지사항 상세</h1>
+    <div class="info">
+      <label>제목:</label> <span th:text="${help.title}"></span>
+    </div>
+    <div class="info">
+      <label>작성자 ID:</label> <span th:text="${help.userId}"></span>
+    </div>
+    <div class="info">
+      <label>작성 날짜:</label> <span th:text="${#temporals.format(help.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
+    </div>
+    <div class="info">
+      <label>내용:</label>
+      <p th:text="${help.content}"></p>
+    </div>
+    <div class="button-container">
+      <a th:href="@{/admin/help/update/{id}(id=${help.noticeId})}" class="edit-btn">수정하기</a>
+      <form th:action="@{/admin/help/delete/{id}(id=${help.noticeId})}" method="post">
+        <button type="submit" class="delete-btn" onclick="return confirm('정말 삭제하시겠습니까?');">삭제하기</button>
+      </form>
+      <a th:href="@{/admin/help}" class="back-btn">목록으로</a>
+    </div>
+  </main>
+</th:block>
+<th:block layout:fragment="js">
+</th:block>
 </body>
 </html>
