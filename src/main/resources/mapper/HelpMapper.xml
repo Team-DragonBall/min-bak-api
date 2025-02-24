@@ -2,46 +2,43 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.minbak.web.notice.NoticeMapper">
+<mapper namespace="com.minbak.web.help.HelpMapper">
 
-    <insert id="insertNotice" parameterType="com.minbak.web.notice.NoticeDto" useGeneratedKeys="true" keyProperty="noticeId">
+    <insert id="insertHelp" parameterType="com.minbak.web.help.HelpDto" useGeneratedKeys="true" keyProperty="noticeId">
         INSERT INTO notice (user_id, title, content, created_at)
         VALUES (#{userId}, #{title}, #{content}, NOW())
     </insert>
 
-
-    <!-- 공지사항 목록 조회 -->
-    <select id="getNoticeList" resultType="com.minbak.web.notice.NoticeDto">
-        SELECT n.notice_id, n.user_id, n.title, n.created_at, n.pinned_num
+    <!-- 고객 서비스 센터 목록 조회 -->
+    <select id="getHelpList" resultType="com.minbak.web.help.HelpDto">
+        SELECT n.notice_id AS noticeId, n.user_id, n.title, n.created_at, n.pinned_num
         FROM notice n
         ORDER BY n.pinned_num DESC, n.created_at DESC
         LIMIT #{limit} OFFSET #{offset}
     </select>
-    <!-- 공지사항 총 개수 조회 -->
-    <select id="getNoticeCount" resultType="int">
+
+    <!-- 고객 서비스 센터 총 개수 조회 -->
+    <select id="getHelpCount" resultType="int">
         SELECT COUNT(*) FROM notice
     </select>
-    <!-- 공지사항 상세 조회 -->
-    <select id="getNoticeById" parameterType="int" resultType="com.minbak.web.notice.NoticeDto">
+
+    <!-- 고객 서비스 센터 상세 조회 -->
+    <select id="getHelpById" parameterType="int" resultType="com.minbak.web.help.HelpDto">
         SELECT * FROM notice WHERE notice_id = #{noticeId}
     </select>
 
-
-    <update id="updateNotice" parameterType="com.minbak.web.notice.NoticeDto">
+    <update id="updateHelp" parameterType="com.minbak.web.help.HelpDto">
         UPDATE notice
         SET title = #{title}, content = #{content}
         WHERE notice_id = #{noticeId}
     </update>
 
-    <delete id="deleteNotice" parameterType="int">
+    <delete id="deleteHelp" parameterType="int">
         DELETE FROM notice WHERE notice_id = #{noticeId}
     </delete>
 
-
-
-
-    <!-- 검색된 공지사항 개수 조회 -->
-    <select id="getSearchNoticeCount" resultType="int">
+    <!-- 검색된 고객 서비스 센터 개수 조회 -->
+    <select id="getSearchHelpCount" resultType="int">
         SELECT COUNT(*)
         FROM notice
         <where>
@@ -59,8 +56,8 @@
         </where>
     </select>
 
-    <!-- 검색된 공지사항 목록 조회 -->
-    <select id="searchNotices" resultType="com.minbak.web.notice.NoticeDto">
+    <!-- 검색된 고객 서비스 센터 목록 조회 -->
+    <select id="searchHelps" resultType="com.minbak.web.help.HelpDto">
         SELECT *
         FROM notice
         <where>
@@ -80,24 +77,25 @@
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
-    <!-- 공지사항 고정하기 -->
-    <update id="pinNotice" parameterType="map">
+    <!-- 고객 서비스 센터 고정하기 -->
+    <update id="pinHelp" parameterType="map">
         UPDATE notice
         SET pinned_num = #{pinnedNum}
         WHERE notice_id = #{noticeId}
     </update>
-    <!-- 공지사항 고정 해제하기 -->
-    <update id="unpinNotice" parameterType="int">
+
+    <!-- 고객 서비스 센터 고정 해제하기 -->
+    <update id="unpinHelp" parameterType="int">
         UPDATE notice
         SET pinned_num = 0
         WHERE notice_id = #{noticeId}
     </update>
-    <!-- 고정된 공지사항과 일반 공지사항을 합쳐서 가져오기 -->
-    <select id="getNoticesWithPinned" resultType="com.minbak.web.notice.NoticeDto">
+
+    <!-- 고정된 고객 서비스 센터와 일반 고객 서비스 센터를 합쳐서 가져오기 -->
+    <select id="getHelpsWithPinned" resultType="com.minbak.web.help.HelpDto">
         SELECT *
         FROM notice
         ORDER BY pinned_num DESC, created_at DESC
     </select>
-
 
 </mapper>

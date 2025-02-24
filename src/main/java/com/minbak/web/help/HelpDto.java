@@ -1,4 +1,4 @@
-package com.minbak.web.notice;
+package com.minbak.web.help;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class NoticeDto {
+public class HelpDto {
     private Integer noticeId; // 공지사항 ID
 
     @NotNull(message = "작성자 ID는 필수입니다.")
