@@ -1,5 +1,6 @@
 package com.minbak.web.help;
 
+import com.minbak.web.common.dto.PageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class HelpService {
         helpMapper.insertHelp(helpDto);
     }
 
-    public HelpPageDto<HelpDto> getHelpList(int currentPage, int pageSize, String searchType, String searchQuery) {
+    public PageDto<HelpDto> getHelpList(int currentPage, int pageSize, String searchType, String searchQuery) {
         int totalHelps;
 
         if (searchQuery.isEmpty()) {
@@ -40,8 +41,11 @@ public class HelpService {
             // 검색 조건이 있을 때는 검색된 고객 서비스 목록 가져오기
             helps = helpMapper.searchHelps(pageSize, offset, searchType, searchQuery);
         }
+        System.out.println("Total helps: " + totalHelps);
+        System.out.println("Fetched helps size: " + helps.size());
 
-        return new HelpPageDto<>(currentPage, pageSize, totalHelps, helps);
+        return new PageDto<>(currentPage, pageSize, totalHelps, helps);
+
     }
 
     // 상세 보기

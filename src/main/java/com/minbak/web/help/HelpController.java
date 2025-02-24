@@ -1,5 +1,6 @@
 package com.minbak.web.help;
 
+import com.minbak.web.common.dto.PageDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,16 +43,10 @@ public class HelpController {
         List<HelpDto> helpsWithPinned = helpService.getHelpsWithPinned();
 
         // 페이지네이션 처리
-        HelpPageDto<HelpDto> helpPageDto = helpService.getHelpList(page, pageSize, searchType, searchQuery);
+        PageDto<HelpDto> pageDto = helpService.getHelpList(page, pageSize, searchType, searchQuery);
 
-        model.addAttribute("helps", helpPageDto.getObjects());  // 목록 데이터
+        model.addAttribute("pageDto", pageDto);
         model.addAttribute("helpsWithPinned", helpsWithPinned);  // 고정된 목록 포함
-        model.addAttribute("currentPage", helpPageDto.getCurrentPage());
-        model.addAttribute("totalPages", Math.max(1, helpPageDto.getTotalPages()));
-        model.addAttribute("startPage", helpPageDto.getStartPage());
-        model.addAttribute("endPage", helpPageDto.getEndPage());
-        model.addAttribute("hasPrev", helpPageDto.isHasPrev());
-        model.addAttribute("hasNext", helpPageDto.isHasNext());
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchQuery", searchQuery);
 

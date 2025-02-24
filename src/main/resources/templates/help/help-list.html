@@ -59,6 +59,38 @@
     .delete-btn { background-color: #dc3545; } /* 빨간색 */
     .edit-btn:hover { background-color: #218838; }
     .delete-btn:hover { background-color: #c82333; }
+
+    .pagination {
+  display: flex; /* 가로 정렬 */
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+}
+
+.page-item {
+  display: inline-block; /* 가로 배치 */
+  margin: 0 5px; /* 좌우 여백 추가 */
+}
+
+.page-link {
+  display: block;
+  padding: 8px 12px;
+  text-decoration: none;
+  border: 1px solid #007bff;
+  color: #007bff;
+  border-radius: 5px;
+}
+
+.page-link.active {
+  background: #007bff;
+  color: white;
+}
+
+.page-link:hover {
+  background: #0056b3;
+  color: white;
+}
+
   </style>
 </head>
 <body>
@@ -92,7 +124,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="help: ${helps}"
+    <tr th:each="help : ${pageDto.objects}"
         th:classappend="${help.pinnedNum > 0} ? 'pinned-help' : ''">
       <td th:text="${help.noticeId}"></td>
       <td>
@@ -124,17 +156,22 @@
     </tbody>
   </table>
 
-  <div class="pagination">
-    <a th:if="${currentPage > 1}" th:href="@{/admin/help(page=${currentPage - 1})}">이전</a>
+  <nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" th:classappend="${pageDto.hasPrev} ? '' : 'disabled'">
+        <a class="page-link" th:href="@{/admin/help?page={page}(page=${pageDto.currentPage - 1})}">«</a>
+      </li>
+      <li class="page-item" th:each="i : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}">
+        <a class="page-link" th:classappend="${pageDto.currentPage == i} ? 'active text-white' : ''"
+           th:href="@{/admin/help?page={i}(i=${i})}"
+           th:text="${i}"></a>
+      </li>
+      <li th:class="${pageDto.hasNext ? 'page-item' : 'page-item disabled'}">
+        <a class="page-link" th:href="@{/admin/help?page={page}(page=${pageDto.currentPage + 1})}">»</a>
+      </li>
+    </ul>
+  </nav>
 
-    <a th:each="page : ${#numbers.sequence(1, totalPages)}"
-       th:href="@{/admin/help(page=${page})}"
-       th:text="${page}"
-       th:classappend="${page == currentPage} ? 'active' : ''">
-    </a>
-
-    <a th:if="${currentPage < totalPages}" th:href="@{/admin/help(page=${currentPage + 1})}">다음</a>
-   </div>
 </main>
 </body>
 </html>

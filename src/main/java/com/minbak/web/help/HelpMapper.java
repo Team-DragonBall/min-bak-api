@@ -26,6 +26,7 @@ public interface HelpMapper {
                               @Param("searchType") String searchType,
                               @Param("searchQuery") String searchQuery);
 
+
     // 공지사항 상세 조회
     HelpDto getHelpById(int noticeId);
 
