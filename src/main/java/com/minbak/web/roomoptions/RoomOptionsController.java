@@ -77,6 +77,16 @@ public class RoomOptionsController {
         roomOptionsService.deleteRoomOption(optionId);
         return "redirect:/admin/roomoptions";
     }
+
+
+    // 편의시설 필터 적용된 숙소 리스트를 Thymeleaf에서 렌더링
+    // 사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회
+    @GetMapping("/test")
+    public String getRoomsByAmenities(@RequestParam(required = false) List<String> amenities, Model model) {
+        List<RoomOptionsDto> rooms = roomOptionsService.getRoomsByAmenities(amenities != null ? amenities : List.of());
+        model.addAttribute("rooms", rooms); // 모델에 숙소 리스트 추가
+        return "roomOptions/roomOption-AllList"; // Thymeleaf에서 사용할 HTML 파일명 (roomOption-AllList.html)
+    }
 }
 
 
@@ -85,12 +95,5 @@ public class RoomOptionsController {
 
 
 
-//    // 편의시설 필터 적용된 숙소 리스트를 Thymeleaf에서 렌더링
-//    // 5. 사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회
-//    @GetMapping
-//    public String getRoomsByAmenities(@RequestParam(required = false) List<String> amenities, Model model) {
-//        List<RoomOptionsDto> rooms = roomOptionsService.getRoomsByAmenities(amenities != null ? amenities : List.of());
-//        model.addAttribute("rooms", rooms); // 모델에 숙소 리스트 추가
-//        return "roomOptions/roomOption-list"; // Thymeleaf에서 사용할 HTML 파일명 (roomOption-AllList.html)
-//    }
+
 

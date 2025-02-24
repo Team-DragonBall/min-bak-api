@@ -46,13 +46,13 @@ public class RoomOptionsService {
 
 
 
-//    // 다대다 기능으로 필요 없을 걸로 추정
-//    // 사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회
-//    public List<RoomOptionsDto> getRoomsByAmenities(List<String> amenities) {
-//        if (amenities == null || amenities.isEmpty()) {
-//            return roomOptionsMapper.getAllRooms();
-//        }
-//        return roomOptionsMapper.getRoomsByAmenities(amenities, amenities.size());
-//    }
+    // 다대다 기능으로 필요 없을 걸로 추정
+    // 사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회
+    public List<RoomOptionsDto> getRoomsByAmenities(List<String> amenities) {
+        if (amenities == null || amenities.isEmpty()) {
+            return roomOptionsMapper.getAllRoomOption();
+        }
+        return roomOptionsMapper.getRoomsByAmenities(amenities, amenities.size());
+    }
 
 }

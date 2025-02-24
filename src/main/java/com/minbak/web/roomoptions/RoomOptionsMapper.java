@@ -27,10 +27,10 @@ public interface RoomOptionsMapper {
 
 
 
-//    다대다 기능으로 필요 없게 됨
-//    //  모든 숙소 조회 (편의시설 필터 없이)
-//    List<RoomOptionsDto> getAllRooms();
-//    // 6. 사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회
-//    List<RoomOptionsDto> getRoomsByAmenities(@Param("amenities") List<String> amenities, @Param("size") int size);
+//    다대다 기능으로 삭제 될 예정
+    //  모든 숙소 조회 (편의시설 필터 없이)
+    List<RoomOptionsDto> getAllRoomOption();
+    // 6. 사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회
+    List<RoomOptionsDto> getRoomsByAmenities(@Param("amenities") List<String> amenities, @Param("size") int size);
 
 }

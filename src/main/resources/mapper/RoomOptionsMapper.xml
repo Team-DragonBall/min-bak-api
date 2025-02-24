@@ -34,26 +34,27 @@
         DELETE FROM room_options WHERE option_id = #{optionId}
     </delete>
 
+
 <!-- 다대다 기능으로 필요 없을 걸로 추정-->
-<!--    <select id="getAllRoomOption" resultType="com.minbak.web.roomoptions.RoomOptionsDto">-->
-<!--        SELECT * FROM rooms-->
-<!--    </select>-->
-<!--    &lt;!&ndash; 5.사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회 &ndash;&gt;-->
-<!--    <select id="getRoomsByAmenities" resultType="com.minbak.web.roomoptions.RoomOptionsDto">-->
-<!--        SELECT r.*-->
-<!--        FROM rooms r-->
-<!--        JOIN rooms_room_options rro ON r.room_id = rro.room_id-->
-<!--        JOIN room_options ro ON rro.option_id = ro.option_id-->
-<!--        <where>-->
-<!--            <if test="amenities != null and amenities.size() > 0">-->
-<!--                ro.name IN-->
-<!--                <foreach collection="amenities" item="amenity" open="(" separator="," close=")">-->
-<!--                    #{amenity}-->
-<!--                </foreach>-->
-<!--            </if>-->
-<!--        </where>-->
-<!--        GROUP BY r.room_id-->
-<!--        HAVING COUNT(DISTINCT ro.option_id) = #{size}-->
-<!--    </select>-->
+    <select id="getAllRoomOption" resultType="com.minbak.web.roomoptions.RoomOptionsDto">
+        SELECT * FROM rooms
+    </select>
+    <!-- 5.사용자가 선택한 편의시설을 포함하는 숙소 리스트 조회 -->
+    <select id="getRoomsByAmenities" resultType="com.minbak.web.roomoptions.RoomOptionsDto">
+        SELECT r.*
+        FROM rooms r
+        JOIN rooms_room_options rro ON r.room_id = rro.room_id
+        JOIN room_options ro ON rro.option_id = ro.option_id
+        <where>
+            <if test="amenities != null and amenities.size() > 0">
+                ro.name IN
+                <foreach collection="amenities" item="amenity" open="(" separator="," close=")">
+                    #{amenity}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY r.room_id
+        HAVING COUNT(DISTINCT ro.option_id) = #{size}
+    </select>
 
 </mapper>
