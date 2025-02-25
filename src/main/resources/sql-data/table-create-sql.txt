@@ -1,0 +1,237 @@
+
+create database minbak_test1;
+
+use minbak_test1;
+
+-- 1. 회원 테이블
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    phone_number VARCHAR(15),
+    password VARCHAR(255) NOT NULL,
+    enabled BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_reports (
+    report_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '신고 고유 ID',
+    reporter_id INT NULL COMMENT '신고한 사용자 ID',
+    reported_user_id INT NOT NULL COMMENT '신고당한 사용자 ID',
+    report_reason VARCHAR(255) NOT NULL COMMENT '신고 사유',
+    report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '신고 접수 시간',
+    processed_at TIMESTAMP NULL COMMENT '처리 완료 시간',
+    FOREIGN KEY (reporter_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (reported_user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+ALTER TABLE user_reports
+ADD COLUMN status ENUM('대기', '진행 중', '완료') DEFAULT '대기' COMMENT '신고 처리 상태';
+
+
+CREATE TABLE roles (
+    role_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    role VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE users_roles (
+    user_id INT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES roles(role_id) ON DELETE CASCADE
+);
+
+-- 2. 숙박 시설 테이블
+CREATE TABLE rooms (
+    room_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '숙박 시설 고유 ID',
+    name VARCHAR(100) NOT NULL COMMENT '숙박 시설 이름',
+    content VARCHAR(1000) COMMENT '숙박 시설 설명',
+    address VARCHAR(200) NOT NULL COMMENT '숙박 시설 주소',
+    price INT NOT NULL COMMENT '숙박 가격',
+    use_guide VARCHAR(2000) COMMENT '숙박 이용 안내'
+);
+
+ALTER TABLE rooms
+ADD COLUMN user_id INT NOT NULL COMMENT '사용자 ID',
+ADD CONSTRAINT fk_rooms_user
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE;
+
+ALTER TABLE rooms ADD latitude DECIMAL(10, 6);
+
+ALTER TABLE rooms ADD longitude DECIMAL(10, 6);
+
+-- 1. rooms 테이블에 review_count와 max_guests 컬럼 추가
+ALTER TABLE rooms
+ADD COLUMN max_guests INT NOT NULL COMMENT '최대 숙박 인원';
+
+ALTER TABLE rooms
+ADD COLUMN title VARCHAR(200) NOT NULL COMMENT '숙소 제목' AFTER name;
+
+ALTER TABLE rooms 
+ADD COLUMN bedrooms INT DEFAULT 1 COMMENT '침실 개수',
+ADD COLUMN beds INT DEFAULT 1 COMMENT '침대 개수',
+ADD COLUMN bathrooms INT DEFAULT 1 COMMENT '욕실 개수';
+
+ALTER TABLE rooms
+ADD COLUMN building_type ENUM('아파트', '주택', '빌라') NOT NULL COMMENT '건물 유형';
+
+-- 예약 테이블 생성
+CREATE TABLE books (
+    book_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '예약 고유 ID',
+    status VARCHAR(10) NOT NULL COMMENT '예약 상태 (대기, 완료, 만료, 이용자 취소, 숙박업자 취소)',
+    start_date DATE NOT NULL COMMENT '예약 시작일',
+    end_date DATE NOT NULL COMMENT '예약 종료일',
+    request VARCHAR(1000) COMMENT '예약 요청사항',
+    user_id INT NOT NULL COMMENT '회원 ID',
+    room_id INT NULL COMMENT '숙박 시설 ID',  -- room_id를 NULL 가능하게 설정
+    guests_num INT DEFAULT 1 COMMENT '예약 인원 수',  -- 예약 인원 수 추가
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,  -- 외래 키 (회원 ID)
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE SET NULL  -- 외래 키 (숙박 시설 ID) with ON DELETE SET NULL
+);
+
+-- 리뷰테이블
+CREATE TABLE review (
+    review_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '리뷰 고유 ID',
+    user_id INT NULL COMMENT '작성한 회원 ID',  -- NULL 가능하게 설정
+    book_id INT NULL COMMENT '리뷰 대상 예약 ID',  -- NULL 가능하게 설정
+    content VARCHAR(300) NOT NULL COMMENT '리뷰 내용',
+    score INT NOT NULL COMMENT '리뷰 점수',
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,  -- 외래 키 (ON DELETE SET NULL)
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE SET NULL   -- 외래 키 (ON DELETE SET NULL)
+);
+
+
+
+-- 1. created_at과 updated_at 칼럼 추가
+ALTER TABLE review 
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '리뷰 생성 시간',
+ADD COLUMN updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '리뷰 수정 시간';
+
+
+-- 8. 메시지 테이블
+CREATE TABLE message (
+    message_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '메시지 고유 ID',
+    sender_id INT NOT NULL COMMENT '보낸 회원 ID',
+    receiver_id INT NOT NULL COMMENT '받은 회원 ID',
+    content TEXT NOT NULL COMMENT '메시지 내용',
+    sent_at DATETIME NOT NULL COMMENT '메시지 발송 시간',
+    FOREIGN KEY (sender_id) REFERENCES users(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES users(user_id)
+);
+
+ALTER TABLE message
+MODIFY sent_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- messages 테이블에 is_read 컬럼 추가
+ALTER TABLE message
+ADD COLUMN is_read TINYINT(1) NOT NULL DEFAULT 0 COMMENT '읽음 여부';
+
+
+-- 9. 공지사항 테이블
+CREATE TABLE notice (
+    notice_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '공지사항 고유 ID',
+    user_id INT NOT NULL COMMENT '작성한 회원 ID',
+    title VARCHAR(255) NOT NULL COMMENT '공지사항 제목',
+    content TEXT NOT NULL COMMENT '공지사항 내용',
+    created_at DATETIME NOT NULL COMMENT '공지사항 생성 시간',
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+ALTER TABLE notice MODIFY COLUMN content MEDIUMTEXT NOT NULL COMMENT '공지사항 내용';
+
+ALTER TABLE notice ADD COLUMN pinned_num INT DEFAULT 0;
+
+-- 10. 카테고리 테이블
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,  -- 고유 ID, 자동 증가
+    name VARCHAR(255) NOT NULL          -- 카테고리 이름 (필수)
+);
+
+
+
+-- 11. 다대다(rooms) 연결 테이블 생성
+CREATE TABLE rooms_categories (
+    room_id INT NOT NULL,               -- 숙박 시설 ID (rooms 테이블과 연결)
+    category_id INT NOT NULL,           -- 카테고리 ID (categories 테이블과 연결)
+    PRIMARY KEY (room_id, category_id),
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,   -- 숙박 시설 ID 참조
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE -- 카테고리 ID 참조
+);
+
+CREATE TABLE room_options (
+    option_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '룸 옵션 고유 ID',
+    name VARCHAR(255) NOT NULL COMMENT '룸 옵션 이름'
+);
+
+ALTER TABLE room_options ADD COLUMN options_category varchar(50);
+
+CREATE TABLE rooms_room_options (
+    room_id INT NOT NULL,               -- 숙박 시설 ID (rooms 테이블과 연결)
+    option_id INT NOT NULL,             -- 룸 옵션 ID (room_options 테이블과 연결)
+    PRIMARY KEY (room_id, option_id),   -- 복합 기본 키
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id) ON DELETE CASCADE,   -- 숙박 시설 ID 참조
+    FOREIGN KEY (option_id) REFERENCES room_options(option_id) ON DELETE CASCADE -- 룸 옵션 ID 참조
+);
+
+
+CREATE TABLE payments (
+    payment_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '결제 고유 ID',
+    user_id INT NULL COMMENT '결제한 회원 ID',
+    book_id INT NULL COMMENT '예약 ID',
+    amount DECIMAL(10,2) NOT NULL COMMENT '결제 금액',
+    status ENUM('결제 대기', '결제 완료', '결제 실패', '환불됨') NOT NULL DEFAULT '결제 대기' COMMENT '결제 상태',
+    method ENUM('신용카드', '페이팔', '계좌이체') NOT NULL COMMENT '결제 수단',
+    transaction_id VARCHAR(255) UNIQUE COMMENT '외부 결제 시스템 트랜잭션 ID',
+    paid_at DATETIME DEFAULT NULL COMMENT '결제 완료 시간',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '결제 요청 시간',
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE set null,
+    FOREIGN KEY (book_id) REFERENCES books(book_id) ON DELETE set null
+);
+
+CREATE TABLE refresh_tokens (
+    token_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '토큰 고유 ID',
+    username VARCHAR(100) NOT NULL COMMENT '사용자 이름',
+    refresh_token VARCHAR(255) NOT NULL COMMENT '리프레시 토큰',
+    expiration DATETIME NOT NULL COMMENT '리프레시 토큰 만료 시간'
+);
+
+ALTER TABLE categories
+ADD COLUMN category_order INT DEFAULT 0;
+
+CREATE TABLE rooms_reports (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    room_id INT NOT NULL,
+    user_id INT NOT NULL,
+    report_type VARCHAR(255) NOT NULL,
+    report_description TEXT,
+    report_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('PENDING', 'IN_PROGRESS', 'COMPLETED') DEFAULT 'PENDING',
+    FOREIGN KEY (room_id) REFERENCES rooms(room_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE host (
+    host_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '호스트 고유 ID',
+    user_id INT NOT NULL COMMENT '사용자 ID',
+    hobby VARCHAR(255) COMMENT '호스트 취미',
+    introduction TEXT COMMENT '호스트 소개',
+    is_verified TINYINT(1) DEFAULT 0 COMMENT '검증 여부 (0: 미검증, 1: 검증)',
+    account_number VARCHAR(255) COMMENT '계좌 번호',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성 시간',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정 시간',
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE image_files (
+    image_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '이미지 고유 ID',
+    file_url VARCHAR(255) NOT NULL COMMENT '이미지 파일 URL',
+    file_name VARCHAR(255) NOT NULL COMMENT '파일 이름',
+    file_size INT NULL COMMENT '파일 크기 (바이트 단위)',
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '업로드 시간',
+    user_id INT NULL COMMENT '업로드한 사용자 ID',
+    entity_type VARCHAR(50) COMMENT '이미지가 연결된 엔티티 타입 (예: rooms, message, users)',
+    entity_id INT COMMENT '이미지가 연결된 엔티티의 ID (예: room_id, message_id, user_id)',
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL  -- 삭제된 사용자에 대해 이미지의 user_id를 NULL로 설정
+);
