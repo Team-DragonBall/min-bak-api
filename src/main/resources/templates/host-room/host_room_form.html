@@ -8,7 +8,7 @@
 <body>
 <h2>숙소 등록</h2>
 
-<form th:action="@{/host/room/submit}" th:object="${hostRoomDTO}" method="post" enctype="multipart/form-data">
+<form th:action="@{/user/host/room/submit}" th:object="${hostRoomDTO}" method="post" enctype="multipart/form-data">
 
     <label for="name">숙소 이름:</label>
     <input type="text" id="name" name="name" required>
@@ -26,7 +26,7 @@
     <textarea id="content" name="content" required></textarea>
     <br>
 
-    <label for="title">숙소 소제목? </label>
+    <label for="title">숙소 소제목:</label>
     <input type="text" id="title" name="title" required>
     <br>
 
