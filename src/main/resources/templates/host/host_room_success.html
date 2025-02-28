@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>숙소 등록 성공</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>숙소 등록 성공</h2>
+<p>등록이 완료되었습니다!</p>
+
+<a th:href="@{/host/room/form}">
+  <button>새 숙소 등록</button>
+</a>
+
+<a th:href="@{/host/room/list}">
+  <button>숙소 목록 보기</button>
+</a>
+</body>
+</html>
