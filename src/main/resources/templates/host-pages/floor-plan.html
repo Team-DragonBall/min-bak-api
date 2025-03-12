@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>숙소 기본 정보 입력</title>
@@ -91,59 +91,106 @@
 <body>
 <div class="container">
     <h1>숙소 기본 정보를 알려주세요.</h1>
-    <div class="counter-container">
-        <div class="counter">
-            <span class="label">게스트</span>
-            <div class="controls">
-                <button onclick="decrement('guest')">-</button>
-                <span class="count" id="guestCount">0</span>
-                <button onclick="increment('guest')">+</button>
+
+    <!-- ✅ Form 추가하여 데이터 전송 -->
+    <form id="floorPlanForm" action="/host/floor-plan/save" method="post">
+        <!-- ✅ 숨겨진 입력 필드 (세션 값 유지) -->
+        <input type="hidden" id="maxGuests" name="maxGuests" th:value="${hostDto.maxGuests} ?: 1">
+        <input type="hidden" id="bedrooms" name="bedrooms" th:value="${hostDto.bedrooms} ?: 1">
+        <input type="hidden" id="beds" name="beds" th:value="${hostDto.beds} ?: 1">
+        <input type="hidden" id="bathrooms" name="bathrooms" th:value="${hostDto.bathrooms} ?: 1">
+
+        <div class="counter-container">
+            <div class="counter">
+                <span class="label">게스트</span>
+                <div class="controls">
+                    <button type="button" onclick="decrement('maxGuests')">-</button>
+                    <span class="count" id="maxGuestsCount" th:text="${hostDto.maxGuests} ?: 1">1</span>
+                    <button type="button" onclick="increment('maxGuests')">+</button>
+                </div>
+            </div>
+            <div class="counter">
+                <span class="label">침실</span>
+                <div class="controls">
+                    <button type="button" onclick="decrement('bedrooms')">-</button>
+                    <span class="count" id="bedroomsCount" th:text="${hostDto.bedrooms} ?: 1">1</span>
+                    <button type="button" onclick="increment('bedrooms')">+</button>
+                </div>
+            </div>
+            <div class="counter">
+                <span class="label">침대</span>
+                <div class="controls">
+                    <button type="button" onclick="decrement('beds')">-</button>
+                    <span class="count" id="bedsCount" th:text="${hostDto.beds} ?: 1">1</span>
+                    <button type="button" onclick="increment('beds')">+</button>
+                </div>
+            </div>
+            <div class="counter">
+                <span class="label">욕실</span>
+                <div class="controls">
+                    <button type="button" onclick="decrement('bathrooms')">-</button>
+                    <span class="count" id="bathroomsCount" th:text="${hostDto.bathrooms} ?: 1">1</span>
+                    <button type="button" onclick="increment('bathrooms')">+</button>
+                </div>
             </div>
         </div>
-        <div class="counter">
-            <span class="label">침실</span>
-            <div class="controls">
-                <button onclick="decrement('bedroom')">-</button>
-                <span class="count" id="bedroomCount">0</span>
-                <button onclick="increment('bedroom')">+</button>
-            </div>
-        </div>
-        <div class="counter">
-            <span class="label">침대</span>
-            <div class="controls">
-                <button onclick="decrement('bed')">-</button>
-                <span class="count" id="bedCount">0</span>
-                <button onclick="increment('bed')">+</button>
-            </div>
-        </div>
-        <div class="counter">
-            <span class="label">욕실</span>
-            <div class="controls">
-                <button onclick="decrement('bathroom')">-</button>
-                <span class="count" id="bathroomCount">0</span>
-                <button onclick="increment('bathroom')">+</button>
-            </div>
-        </div>
-    </div>
-    <a href="#" class="next-btn">다음</a>
+
+        <!-- ✅ "다음" 버튼 (폼 제출) -->
+        <button type="submit" class="next-btn">다음</button>
+    </form>
 </div>
 
 <script>
     function increment(type) {
-      const countEl = document.getElementById(type + 'Count');
-      let count = parseInt(countEl.innerText, 10);
-      if (count < 8) {
-        countEl.innerText = count + 1;
-      }
+        const countEl = document.getElementById(type + 'Count');
+        const inputEl = document.getElementById(type);
+
+        if (!countEl || !inputEl) {
+            console.error(`🚨 오류: ${type}Count 요소를 찾을 수 없음!`);
+            return;
+        }
+
+        let count = parseInt(countEl.innerText, 10);
+        if (count < 8) {
+            count += 1;
+            countEl.innerText = count;
+            inputEl.value = count;
+        }
+
+        console.log(`✅ ${type} 증가:`, count);
     }
 
     function decrement(type) {
-      const countEl = document.getElementById(type + 'Count');
-      let count = parseInt(countEl.innerText, 10);
-      if (count > 0) {
-        countEl.innerText = count - 1;
-      }
+        const countEl = document.getElementById(type + 'Count');
+        const inputEl = document.getElementById(type);
+
+        if (!countEl || !inputEl) {
+            console.error(`🚨 오류: ${type}Count 요소를 찾을 수 없음!`);
+            return;
+        }
+
+        let count = parseInt(countEl.innerText, 10);
+        if (count > 1) {
+            count -= 1;
+            countEl.innerText = count;
+            inputEl.value = count;
+        }
+
+        console.log(`✅ ${type} 감소:`, count);
     }
+
+    // ✅ 기존 데이터 유지 (뒤로 가기 시 값 복원)
+    document.addEventListener("DOMContentLoaded", function () {
+        const maxGuests = document.getElementById("maxGuests").value || 1;
+        const bedrooms = document.getElementById("bedrooms").value || 1;
+        const beds = document.getElementById("beds").value || 1;
+        const bathrooms = document.getElementById("bathrooms").value || 1;
+
+        document.getElementById("maxGuestsCount").innerText = maxGuests;
+        document.getElementById("bedroomsCount").innerText = bedrooms;
+        document.getElementById("bedsCount").innerText = beds;
+        document.getElementById("bathroomsCount").innerText = bathrooms;
+    });
 </script>
 </body>
 </html>
