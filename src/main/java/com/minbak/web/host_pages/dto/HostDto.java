@@ -29,4 +29,8 @@ public class HostDto {
     private List<String> fileUrls;
    // private List<CreateImageDto> imageFiles; // 추가: 이미지 URL 리스트
     private List<Integer> optionIds; // 선택한 옵션 ID 리스트 (rooms_room_options 테이블 저장용)
+
+
+    private List<Integer> categoryIds;  // 선택한 카테고리 ID 리스트 추가
+
 }

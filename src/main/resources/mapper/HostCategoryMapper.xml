@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.minbak.web.host_pages.HostCategoriesMapper">
+
+    <!-- 전체 카테고리 목록 가져오기 -->
+    <select id="getAllCategories" resultType="com.minbak.web.host_pages.dto.HostCategoriesDto">
+        SELECT category_id, name FROM categories
+    </select>
+
+    <!-- 특정 숙소의 카테고리 가져오기 -->
+    <select id="getCategoriesByRoomId" parameterType="int" resultType="com.minbak.web.host_pages.dto.HostCategoriesDto">
+        SELECT c.category_id, c.name
+        FROM categories c
+        JOIN rooms_categories rc ON c.category_id = rc.category_id
+        WHERE rc.room_id = #{roomId}
+    </select>
+
+</mapper>
