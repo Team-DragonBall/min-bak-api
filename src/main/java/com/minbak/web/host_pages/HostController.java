@@ -382,8 +382,6 @@ public class HostController {
             hostService.updateRoomImages(fileUrl, roomId);
         }
 
-
-
         return "redirect:/host/today";
     }
 }
