@@ -378,6 +378,7 @@ public class HostController {
         hostService.insertRoom(hostDto);
         int roomId = hostDto.getRoomId();  // 생성된 roomId를 가져옴
         createHostMapper.insertRoomOptions(hostDto.getRoomId(),hostDto.getOptionIds());
+        createHostMapper.insertRoomCategories(hostDto.getRoomId(), hostDto.getCategoryIds());
         for (String fileUrl : fileUrls){
             hostService.updateRoomImages(fileUrl, roomId);
         }

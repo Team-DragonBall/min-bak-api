@@ -30,9 +30,6 @@ public class HostService{
     public void insertRoom(HostDto hostDto) {
         // 🏡 1. 숙소 정보 `rooms` 테이블에 저장
         createHostMapper.insertRoom(hostDto);
-        createHostMapper.insertRoomCategories(hostDto.getRoomId(), hostDto.getCategoryIds());
-
-
     }
 
     public ImageFileDto saveFile(String uniqueFilename, String originalFilename ,int fileSize, int roomId, String type) throws IOException {

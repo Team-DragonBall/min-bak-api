@@ -13,4 +13,5 @@ public interface HostCategoriesMapper {
 
     // 특정 숙소의 카테고리 가져오기
     List<HostCategoriesDto> getCategoriesByRoomId(@Param("roomId") int roomId);
+
 }
