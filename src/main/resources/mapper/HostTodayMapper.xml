@@ -10,7 +10,7 @@
         where r.user_id = #{userId};
     </select>
     <select id="getCheckOut" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        select r.name as roomName, u.user_id as userId, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
         WHERE entity_id = r.room_id AND entity_type = 'rooms'
         ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
         from books b
@@ -22,7 +22,7 @@
     </select>
 
     <select id="getOngoing" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        select r.name as roomName, u.user_id as userId, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
         WHERE entity_id = r.room_id AND entity_type = 'rooms'
         ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
         from books b
@@ -34,7 +34,7 @@
     </select>
 
     <select id="getCheckIn" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        select r.name as roomName, u.user_id as userId, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
         WHERE entity_id = r.room_id AND entity_type = 'rooms'
         ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
         from books b
@@ -46,7 +46,7 @@
     </select>
 
     <select id="getUpcoming" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        select r.name as roomName, u.user_id as userId, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
         WHERE entity_id = r.room_id AND entity_type = 'rooms'
         ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url
         from books b
@@ -59,7 +59,7 @@
     </select>
 
     <select id="getPendingReviews" resultType="com.minbak.web.host_today.HostTodayDto">
-        select r.name as roomName, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
+        select r.name as roomName, u.user_id as userId, u.name as userName, b.start_date, b.end_date, b.guests_num, b.status, (SELECT file_url FROM image_files
         WHERE entity_id = r.room_id AND entity_type = 'rooms'
         ORDER BY uploaded_at ASC LIMIT 1) AS room_image_url, rv.review_id, h.host_id
         from books b
